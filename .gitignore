@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # Paul A. add
-.DS_Store
+.DS_Store/
