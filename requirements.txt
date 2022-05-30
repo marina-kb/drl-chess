@@ -2,3 +2,4 @@ chess
 matplotlib
 pettingzoo
 torch
+pettingzoo[classic]
