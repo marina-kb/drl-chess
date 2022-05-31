@@ -23,6 +23,7 @@ def encode_state(observation):
 
 
 class Game():
+    # Add attributes depending on type of players
 
     def __init__(self):
         self.game_env = chess_v5.env()
@@ -33,22 +34,25 @@ class Game():
         return self.chess_env.board
 
     # Version STOCKFISH/Random 1/2
-    def play(self, iters):
-        agent = Agent()
+    def play_sf(self, iters):
+        agent_var = Agent()
+        # Add player_idx loop: ( p_idx = 1 - p_idx)
         for agent in self.game_env.agent_iter(max_iter=iters):
             if agent == 'player_0':
                 observation, reward, done, info = self.game_env.last()
-                move = agent.move(observation)
+                move = agent_var.move(observation)
                 self.game_env.step(move)
             else:
                 observation, reward, done, info = self.game_env.last()
-                move = Engine().move(game.board())
-                self.game_env.step(move)
+                move = Engine().engine_move(game.board())
+                # self.chess_env.board.push(move.move)
+
+                # self.game_env.step(move)
 
 
     # Version Basic Random
-    def play(self):
-        for agent in self.game_env.agent_iter(max_iter=300):
+    def play(self, iters):
+        for agent in self.game_env.agent_iter(max_iter=iters):
             observation, reward, done, info = self.game_env.last()
             move = Agent().move(observation)
             self.game_env.step(move)
@@ -57,19 +61,9 @@ class Game():
             # state = encode_state(self.game_env.render(mode = 'ansi'))
             # print(state)
 
-
-
-
-
-
-
-
-
-
-
-
+# Ajouter un historique des n derniers coups (observations, rewards, etc.)
 
 game = Game()
 
-game.play(3)
+game.play_sf(3)
 print(game.board())
