@@ -6,7 +6,7 @@ from pettingzoo.classic import chess_v5
 
 import numpy as np
 
-from agent import Agent, RandomA, StockFish, DeepKasp_2, DeepKasp_1
+from agent import Agent, RandomA, StockFish, DeepKasp_Conv, DeepKasp_Lin
 
 from config import CFG
 
@@ -53,7 +53,7 @@ class Game():
 
 CFG.init("", rnd_seed=22)
 # players = tuple of 2 players: random / stockfish / deepk / human
-players = (DeepKasp_2(), RandomA())
+players = (DeepKasp_Conv(), RandomA())
 game = Game(players)
 
 game.play()

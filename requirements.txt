@@ -1,6 +1,7 @@
 chess
 matplotlib
 torch
+numpy
 pettingzoo==1.18.1
 pettingzoo[classic]
 

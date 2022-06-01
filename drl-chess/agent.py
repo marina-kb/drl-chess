@@ -23,10 +23,10 @@ class Agent():
         pass
 
 
-class DeepKasp_1(Agent):
+class DeepKasp_Lin(Agent):
     def __init__(self):
         super().__init__()
-        self.net = network.DQN()
+        self.net = network.Lin()
         self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
 
 
@@ -67,10 +67,10 @@ class DeepKasp_1(Agent):
             return torch.argmax(val).numpy()
 
 
-class DeepKasp_2(Agent):
+class DeepKasp_Conv(Agent):
     def __init__(self):
         super().__init__()
-        self.net = network.Net()
+        self.net = network.Conv()
         self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
 
 
@@ -79,11 +79,18 @@ class DeepKasp_2(Agent):
         Learn from a single observation sample.
         """
 
+        print(obs_old)
+        print(obs_new)
+        exit()
+
         obs_old = torch.tensor(obs_old)
         obs_new = torch.tensor(obs_new)
 
+
+
         # We get the network output
         out = self.net(torch.tensor(obs_new))[act]
+        # print(out)
 
         # We compute the target
         with torch.no_grad():
@@ -104,12 +111,23 @@ class DeepKasp_2(Agent):
         """
         # Return random action with probability epsilon
         if random.uniform(0, 1) < CFG.epsilon:
-            return board.sample()
+            return random.choice(new_obs["action_mask"])
         # Else, return action with highest value
 
         with torch.no_grad():
-            val = self.net(torch.tensor(new_obs['observation']))
-            return torch.argmax(val).numpy()
+            val = self.net(torch.tensor(new_obs['observation']).type(torch.FloatTensor))
+            print(val)
+            #print(val.shape)
+            valid_actions = torch.tensor(np.squeeze(np.argwhere(new_obs['action_mask'] == 1).T, axis=0))
+            print(valid_actions)
+            #print(new_obs['action_mask'])
+            valid_q = torch.index_select(val, 0, valid_actions)
+            print(valid_q)
+            best_q = torch.argmax(valid_q).numpy()
+            print(best_q)
+            #print(valid_actions[best_q].numpy())
+            #exit()
+            return valid_actions[best_q]
 
 
 class RandomA(Agent):
