@@ -19,7 +19,7 @@ class Configuration:
         """
         self.alpha = 0.2
         self.gamma = 0.98
-        self.epsilon = 0.05    # set None after
+        self.epsilon = None
         self.rnd_seed = None
         self.agt_type = None
 

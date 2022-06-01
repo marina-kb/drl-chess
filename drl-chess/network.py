@@ -1,7 +1,7 @@
 """"
 Neural Network
 """
-
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -17,10 +17,10 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         self.net = nn.Sequential(
-          nn.Conv2d(111, 50, 3, 2),
+          nn.Conv2d(8, 111, 8, 8),
           nn.ReLU(),
-          nn.Conv2d(50, 25, 3, 2),
-          nn.ReLU(),
+        #   nn.Conv2d(10, 25, 3, 1),
+        #   nn.ReLU(),
           nn.Linear(4672,1),
           )
 
@@ -33,15 +33,16 @@ class DQN(nn.Module):
     A simple Deep Q-Network with 3 linear layers.
     """
 
-    def __init__(self, x_dim, y_dim):
+    def __init__(self):
         super().__init__()
 
         self.net = nn.Sequential(
-            nn.Linear(x_dim, 128),
+            torch.flatten(obs_new),
+            nn.Linear(1, 128),
             nn.ReLU(inplace=True),
             nn.Linear(128, 128),
             nn.ReLU(inplace=True),
-            nn.Linear(128, y_dim),
+            nn.Linear(128, 4672),
             nn.ReLU(inplace=True),
         )
 

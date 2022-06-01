@@ -26,7 +26,7 @@ class Agent():
 class DeepKasp_1(Agent):
     def __init__(self):
         super().__init__()
-        self.net = network.DQN(x_dim, y_dim)
+        self.net = network.DQN()
         self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
 
 
@@ -60,10 +60,10 @@ class DeepKasp_1(Agent):
         """
         # Return random action with probability epsilon
         if random.uniform(0, 1) < CFG.epsilon:
-            return act_space.sample()
+            return board.sample()
         # Else, return action with highest value
         with torch.no_grad():
-            val = self.net(torch.tensor(obs_new))
+            val = self.net(torch.tensor(new_obs))
             return torch.argmax(val).numpy()
 
 
@@ -106,8 +106,9 @@ class DeepKasp_2(Agent):
         if random.uniform(0, 1) < CFG.epsilon:
             return board.sample()
         # Else, return action with highest value
+
         with torch.no_grad():
-            val = self.net(torch.tensor(new_obs))
+            val = self.net(torch.tensor(new_obs['observation']))
             return torch.argmax(val).numpy()
 
 

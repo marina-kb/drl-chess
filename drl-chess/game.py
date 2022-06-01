@@ -6,7 +6,7 @@ from pettingzoo.classic import chess_v5
 
 import numpy as np
 
-from agent import Agent, RandomA, StockFish, DeepKasp_2
+from agent import Agent, RandomA, StockFish, DeepKasp_2, DeepKasp_1
 
 from config import CFG
 
@@ -51,9 +51,9 @@ class Game():
         # Add a self.game_env.reset() once game finish
 
 
-
+CFG.init("", rnd_seed=22)
 # players = tuple of 2 players: random / stockfish / deepk / human
-players = (RandomA(), DeepKasp_2())
+players = (DeepKasp_2(), RandomA())
 game = Game(players)
 
 game.play()
