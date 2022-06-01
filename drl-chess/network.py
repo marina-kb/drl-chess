@@ -17,15 +17,15 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         self.net = nn.Sequential(
-          nn.Conv2d(16,8,8,20),
+          nn.Conv2d(111, 50, 3, 2),
           nn.ReLU(),
-          nn.Conv2d(16,8,8,20),
+          nn.Conv2d(50, 25, 3, 2),
           nn.ReLU(),
           nn.Linear(4672,1),
           )
 
-        def forward(self, x):
-            return self.net(x)
+    def forward(self, x):
+        return self.net(x)
 
 
 class DQN(nn.Module):
@@ -47,37 +47,3 @@ class DQN(nn.Module):
 
     def forward(self, obs):
         return self.net(obs)
-
-
-# Version Vianney
-
-def forward(self, x):
-        return self.net(x)
-
-class Linear_DQN(nn.Module):
-    def __init__(self):
-        super(Linear_DQN, self).__init__()
-        self.net = nn.Sequential(
-        nn.Conv2d(5,20,8,8),
-        nn.ReLU(),
-        nn.Conv2d(20,20,8,8),
-        nn.ReLU(),
-        nn.Linear(4672,1))
-
-    def forward(self, x):
-        return self.net(x)
-
-class Linear_DQN(nn.Module):
-    def __init__(self,x_dim,y_dim):
-        super(Linear_DQN, self).__init__()
-        self.net = nn.Sequential(
-            nn.Linear(x_dim, 128),
-            nn.ReLU(inplace=True),
-            nn.Linear(128, 128),
-            nn.ReLU(inplace=True),
-            nn.Linear(128, y_dim),
-            nn.ReLU(inplace=True),
-        )
-
-    def forward(self, x):
-        return self.net(x)

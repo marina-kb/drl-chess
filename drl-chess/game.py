@@ -6,7 +6,7 @@ from pettingzoo.classic import chess_v5
 
 import numpy as np
 
-from agent import Agent, RandomA, StockFish
+from agent import Agent, RandomA, StockFish, DeepKasp_2
 
 from config import CFG
 
@@ -35,7 +35,7 @@ class Game():
 
             if history[idx] is not None:
                 old_obs, act = history[idx]
-                # self.players[idx].feed(old_obs, act, rwd, new_obs)
+                self.players[idx].feed(old_obs, act, rwd, new_obs)
 
             move = self.players[idx].move(new_obs, game.board())
             self.game_env.step(move)
@@ -53,7 +53,7 @@ class Game():
 
 
 # players = tuple of 2 players: random / stockfish / deepk / human
-players = (RandomA(), StockFish())
+players = (RandomA(), DeepKasp_2())
 game = Game(players)
 
 game.play()
