@@ -7,7 +7,7 @@ import numpy as np
 import chess.engine
 from pettingzoo.classic.chess import chess_utils
 
-from config import Config
+from config import CFG
 from engine import Engine
 
 class Agent():
@@ -45,7 +45,7 @@ class StockFish(Agent):
     def __init__(self):
         super().__init__()
         self.engine = Engine().engine
-        self.time_to_play = Config().time_to_play
+        self.time_to_play = CFG.time_to_play
 
     @staticmethod
     def move_to_act(move):
