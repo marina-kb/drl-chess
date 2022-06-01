@@ -1,5 +1,9 @@
 chess
 matplotlib
-pettingzoo
 torch
-pettingzoo[classic]
+pettingzoo
+
+# pettingzoo==1.10.0
+## Version to use chessV3 and get 8x8x20 obsv shape
+
+## See also https://github.com/Farama-Foundation/PettingZoo/blob/0005f21398757796be65f282427149e470507983/pettingzoo/classic/chess/chess_utils.py#L196

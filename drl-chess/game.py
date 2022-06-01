@@ -6,7 +6,7 @@ from pettingzoo.classic import chess_v5
 
 import numpy as np
 
-from agent import Agent, StockFish
+from agent import Agent, RandomA, StockFish
 from config import Config
 
 
@@ -23,33 +23,43 @@ class Game():
         return self.chess_env.board
 
     def play(self):
-        history = []
+        history = [(None, None)]
 
-        player_idx = 0
+        idx = 0         # Player index (0 or 1)
 
         while not game.board().is_game_over():
+
             observation, reward, done, info = self.game_env.last()
-            move = self.players[player_idx].move(observation, game.board())
+            print(observation['observation'].shape)
+            exit()
+
+            if history == [(None, None)]:
+                pass
+            else:
+                sars = (history[-1][0], history[-1][1], history[-1][2], observation)
+                # give <sars> t-1 to agent: inside .move()?
+
+            move = self.players[idx].move(observation, game.board())
             self.game_env.step(move)
 
             print(game.board())
             print()
-            history.append((observation, reward)) # make history a tuple (agent1, agent2)
+            history.append((observation, move, reward)) # make history a tuple (agent1, agent2):
+                                                        # do one append for player 0 then one for player 1 ?
 
-            player_idx = 1 - player_idx
+            idx = 1 - idx
 
-        if game.board().is_game_over():
-            print("game over!!!")
-            observation, reward, done, info = self.game_env.last() # Get last observation
-            history.append((observation, reward))
-            # print(history)
-
+        print("game over!!!")
+        observation, reward, done, info = self.game_env.last() # Get last observation
+        history.append((observation, move, reward))
+        sars = (history[-1][0], history[-1][1], history[-1][2], observation)
+        print(sars)
         # Add a self.game_env.reset() once game finish
 
 
 
 # players = tuple of 2 players: random / stockfish / deepk / human
-players = (Agent(), StockFish())
+players = (RandomA(), StockFish())
 game = Game(players)
 
 game.play()
