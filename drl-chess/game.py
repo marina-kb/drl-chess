@@ -26,21 +26,30 @@ class Game():
         history = []
 
         player_idx = 0
-        for _ in self.game_env.agent_iter(max_iter=Config().max_iters):
-            observation, reward, done, info = self.game_env.last()
 
+        while not game.board().is_game_over():
+            observation, reward, done, info = self.game_env.last()
             move = self.players[player_idx].move(observation, game.board())
             self.game_env.step(move)
 
             print(game.board())
             print()
-            history.append((observation, reward))
+            history.append((observation, reward)) # make history a tuple (agent1, agent2)
 
             player_idx = 1 - player_idx
 
+        if game.board().is_game_over():
+            print("game over!!!")
+            observation, reward, done, info = self.game_env.last() # Get last observation
+            history.append((observation, reward))
+            # print(history)
+
+        # Add a self.game_env.reset() once game finish
+
+
 
 # players = tuple of 2 players: random / stockfish / deepk / human
-players = (StockFish(), Agent())
+players = (Agent(), StockFish())
 game = Game(players)
 
 game.play()
