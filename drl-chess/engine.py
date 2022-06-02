@@ -18,7 +18,8 @@ class Engine():
         """
         info = self.engine.analyse(board,
                                    limit=chess.engine.Limit(time=0.1))
-        return info["score"]
+        score = int(str(info["score"])[:])
+        return score
 
     def stop_engine(self):
         self.engine.quit()

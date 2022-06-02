@@ -11,8 +11,8 @@ CFG.init("",
          )
 
 # Init 2 agents
-players = (agent.StockFish(),
-           agent.RandomA()
+players = (agent.DeepKasp_Conv(),
+           agent.StockFish()
            )
 
 # Init Chess Game Environment

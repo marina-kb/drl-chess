@@ -27,23 +27,27 @@ class Game():
         return self.chess_env.board
 
     def play(self):
-        history = [None, None]
 
+        history = [None, None]
+        old_score = [0, 0]
         idx = 0         # Player index (0 or 1)
 
         while not self.board().is_game_over():
         # for step in self.game_env.agent_iter(max_iter=5):
-        # add step in in history to debug
 
             new_obs, rwd, done, info = self.game_env.last()
 
-            if CFG.reward_SF:
-                curr_score = CFG.engine.reward_calc(self.board())
-                # rwd = curr_score - 'prev_score'
-                print(curr_score)
-
             if history[idx] is not None:
+
                 old_obs, act = history[idx]
+
+                if CFG.reward_SF:
+                    new_score = CFG.engine.reward_calc(self.board())
+                    print(f"relative score: {new_score}")
+                    temp_rwd = new_score - old_score[idx]
+                    print(f"new - old: {temp_rwd}")
+                    old_score[idx] = new_score
+
                 self.players[idx].feed(old_obs, act, rwd, new_obs)
 
             move = self.players[idx].move(new_obs, self.board())
