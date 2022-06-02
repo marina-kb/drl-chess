@@ -49,6 +49,7 @@ class Game():
 
 
         print(f"game over!!! winner: {self.players[1-idx]}")
+        print(self.players[idx].loss_list)
         # Add a self.game_env.reset() once game finish
 
 
