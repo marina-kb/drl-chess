@@ -84,7 +84,6 @@ class DeepKasp_Conv(Agent):
 
         # We get the network output
         out = self.net(torch.tensor(obs_new.type(torch.FloatTensor)))[act]
-        # print(out)
 
         # We compute the target
         with torch.no_grad():
@@ -116,7 +115,8 @@ class DeepKasp_Conv(Agent):
             valid_q = torch.index_select(val, 0, valid_actions)
             best_q = torch.argmax(valid_q).numpy()
             action = valid_actions[best_q].numpy()
-        print("DeepK Engine Move: ", action.tolist())
+        if CFG.debug:
+            print("DeepK Engine Move: ", action.tolist())
         return action.tolist()
 
 
@@ -143,7 +143,6 @@ class DeepKasp_Conv_Batch(Agent):
         # We get the network output
         # out with n 'obs'
         out = self.net(torch.tensor(obs_new.type(torch.FloatTensor)))[act]
-        # print(out)
 
         # We compute the target
         with torch.no_grad():
@@ -175,7 +174,8 @@ class DeepKasp_Conv_Batch(Agent):
             valid_q = torch.index_select(val, 0, valid_actions)
             best_q = torch.argmax(valid_q).numpy()
             action = valid_actions[best_q].numpy()
-        print("DeepK Engine Move: ", action.tolist())
+        if CFG.debug:
+            print("DeepK Engine Move: ", action.tolist())
         return action.tolist()
 
 
@@ -184,7 +184,8 @@ class RandomA(Agent):
         super().__init__()
 
     def move(self, observation, board):
-        print("Random Move")
+        if CFG.debug:
+            print("Random Move")
         return random.choice(np.flatnonzero(observation['action_mask']))
 
 
@@ -192,7 +193,7 @@ class StockFish(Agent):
     def __init__(self):
         super().__init__()
         if CFG.engine == None:
-            CFG.engine = Engine().engine
+            CFG.engine = Engine()
         self.time_to_play = CFG.time_to_play
 
     @staticmethod
@@ -211,5 +212,6 @@ class StockFish(Agent):
                                    limit=chess.engine.Limit(time=self.time_to_play),
                                    info=chess.engine.Info(1)
                                    )
-        print("Stockfish Engine Move: ", SF_move.move)
+        if CFG.debug:
+            print("Stockfish Engine Move: ", SF_move.move)
         return StockFish.move_to_act(SF_move.move)

@@ -26,11 +26,11 @@ class Configuration:
 
         self.reward_SF = False
         self.engine = None
-
-        self.debug = False       # SETUP
         self.time_to_play = 0.1
 
+        self.debug = False
 
+        self.batch_size = 32
 
 
     def init(self, agt_type, **kwargs):
@@ -54,6 +54,8 @@ class Configuration:
         # Adding Stockfish engine:
         if self.reward_SF :
             self.engine = engine.Engine()
+            if CFG.debug:
+                print("Stockfish init \n")
 
 
 

@@ -1,3 +1,4 @@
+from time import time
 import game
 import agent
 from config import CFG
@@ -6,7 +7,7 @@ from config import CFG
 CFG.init("",
          rnd_seed=22,       # Pick a random seed
          epsilon=0.05,      # Choose a
-         debug=True,        # Print board and stuff to debug
+         debug=False,        # Print board and stuff to debug
          reward_SF=True     # Choose Reward system ('PettingZoo' or 'Stockfish')
          )
 
@@ -16,6 +17,8 @@ players = (agent.DeepKasp_Conv(),
            )
 
 # Init Chess Game Environment
-environment = game.Game(players)
-
-environment.play()
+start_time = time()
+for _ in range(10):
+    environment = game.Game(players)
+    environment.play()
+print("--- Loop done in %s seconds ---" % (time() - start_time))

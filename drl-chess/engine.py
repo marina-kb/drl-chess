@@ -10,15 +10,17 @@ class Engine():
     def __init__(self):
         SF_dir = os.path.join(os.path.dirname(__file__), '../.direnv/stockfish')
         self.engine = chess.engine.SimpleEngine.popen_uci(SF_dir)
-        print("Stockfish init \n")
 
-    def reward_calc(self, board):
+    def reward_calc(self, board, idx):
         """
         Use Stockfish to calculate model's reward
         """
         info = self.engine.analyse(board,
                                    limit=chess.engine.Limit(time=0.1))
-        score = int(str(info["score"])[:])
+        if idx == 0:
+            score = info["score"].white().score(mate_score=10000)
+        else:
+            score = info["score"].black().score(mate_score=10000)
         return score
 
     def stop_engine(self):
