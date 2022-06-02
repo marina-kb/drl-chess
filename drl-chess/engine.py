@@ -25,7 +25,7 @@ class Engine():
 
     def stop_engine(self):
         self.engine.quit()
-        print("Stockfish stop \n")
+        # print("Stockfish stop \n")
 
     def calculate_model_elo(self):
         pass

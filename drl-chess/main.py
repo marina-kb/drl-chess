@@ -7,18 +7,21 @@ from config import CFG
 CFG.init("",
          rnd_seed=22,       # Pick a random seed
          epsilon=0.05,      # Choose a
-         debug=False,        # Print board and stuff to debug
+         debug=True,        # Print board and stuff to debug
          reward_SF=True     # Choose Reward system ('PettingZoo' or 'Stockfish')
          )
 
 # Init 2 agents
 players = (agent.DeepKasp_Conv(),
-           agent.StockFish()
+           agent.DeepKasp_Conv()
            )
 
 # Init Chess Game Environment
+environment = game.Game(players)
+
 start_time = time()
-for _ in range(10):
-    environment = game.Game(players)
+for _ in range(1):
     environment.play()
-print("--- Loop done in %s seconds ---" % (time() - start_time))
+timing = round((time() - start_time), 3)
+print("--- Loop done in %s seconds (avg %s sec)--- \n" % (timing, timing/10))
+CFG.engine.stop_engine()

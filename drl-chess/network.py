@@ -3,10 +3,7 @@ Neural Network
 """
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-
-# Version Paul
 
 class Conv(nn.Module):
     """
@@ -16,7 +13,7 @@ class Conv(nn.Module):
     def __init__(self):
         super(Conv, self).__init__()
 
-        self.conv = nn.Sequential(
+        self.net = nn.Sequential(
             nn.Conv2d(8, 111, 8, 8),
             nn.ReLU(),
             #nn.Conv2d(111, 25, 3, 1),
@@ -31,7 +28,7 @@ class Conv(nn.Module):
           )
 
     def forward(self, x):
-        y = torch.flatten(self.conv(x))
+        y = torch.flatten(self.net(x))
         return self.linear(y)
 
 

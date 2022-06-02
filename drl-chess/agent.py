@@ -7,6 +7,7 @@ import numpy as np
 import chess.engine
 from pettingzoo.classic.chess import chess_utils
 import torch
+import collections
 
 from config import CFG
 from engine import Engine
@@ -105,7 +106,9 @@ class DeepKasp_Conv(Agent):
         """
         # Return random action with probability epsilon
         if random.uniform(0, 1) < CFG.epsilon:
-           return random.choice(np.flatnonzero(new_obs["action_mask"]))
+            if CFG.debug:
+                print("Deep_K Epsilon-induced Random Move !")
+            return random.choice(np.flatnonzero(new_obs["action_mask"]))
 
         # Else, return action with highest value
         with torch.no_grad():
@@ -125,27 +128,57 @@ class DeepKasp_Conv_Batch(Agent):
     def __init__(self):
         super().__init__()
         self.net = network.Conv()
-        #to add
-        self.obs = collections.deque()
+        #to add batch_size 32 & maxlen 100 in config ?
+        self.batch_size = 6
+        self.obs = collections.deque(maxlen=100)
         self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
         self.loss_list = []
 
 
+    # to change will take as arg * 32
     def feed(self, obs_old, act, rwd, obs_new):
         """
         Learn from a single observation sample.
         """
         # choose obs to learn
         # n batch size = obs_old =(8, 8, 111, n)
-        obs_old = torch.tensor(obs_old['observation'])
-        obs_new = torch.tensor(obs_new['observation'])
+        Experience = collections.namedtuple('Experience',
+                    field_names=['obs_old', 'act', 'rwd', 'obs_new'])
+        experience = Experience(torch.tensor(obs_old['observation']), act, rwd,\
+            torch.tensor(obs_new['observation']))
+        self.obs.append(experience)
+
+        # each 20 iters
+        #if iter%20 == 0:
+
+        obs_old_s = []
+        acts = []
+        rwds = []
+        obs_new_s = []
+
+        if len(self.obs) > self.batch_size:
+            batch = random.sample(self.obs, self.batch_size)
+            obs_old_s = [i[0] for i in batch]
+            acts = [i[1] for i in batch]
+            rwds = [i[2] for i in batch]
+            obs_new_s = [i[3] for i in batch]
+
+        print(type(obs_new_s))
+
+        #obs_old = torch.tensor(obs_old['observation'])
+        #obs_new = torch.tensor(obs_new['observation'])
 
         # We get the network output
         # out with n 'obs'
-        out = self.net(torch.tensor(obs_new.type(torch.FloatTensor)))[act]
+        # [act] to check ?
+        # quality(?) of the action
+        # matching <a1...a32> with the out
+        out = self.net(torch.FloatTensor(obs_new_s))[acts]
+        # print(out)
 
         # We compute the target
         with torch.no_grad():
+            # rwd = <r1...r2>
             exp = rwd + CFG.gamma * self.net(obs_new.type(torch.FloatTensor)).max()
 
         # Compute the loss
@@ -153,10 +186,12 @@ class DeepKasp_Conv_Batch(Agent):
         self.loss_list.append(loss.tolist())
 
         # Perform a backward propagation.
+        # exit() before backward prop to check
         self.opt.zero_grad()
         loss.sum().backward()
         self.opt.step()
 
+    # stats_rwd(rwd):
 
     def move(self, new_obs, board):
         """
@@ -174,8 +209,7 @@ class DeepKasp_Conv_Batch(Agent):
             valid_q = torch.index_select(val, 0, valid_actions)
             best_q = torch.argmax(valid_q).numpy()
             action = valid_actions[best_q].numpy()
-        if CFG.debug:
-            print("DeepK Engine Move: ", action.tolist())
+        print("DeepK Engine Move: ", action.tolist())
         return action.tolist()
 
 
