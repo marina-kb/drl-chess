@@ -1,5 +1,5 @@
 __pycache__/
 *.py[cod]
-.direnv
 *.DS_Store
 *.python-version
+.direnv
