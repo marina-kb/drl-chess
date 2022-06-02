@@ -144,62 +144,71 @@ class DeepKasp_Conv_Batch(Agent):
         # choose obs to learn
         # n batch size = obs_old =(8, 8, 111, n)
         Experience = collections.namedtuple('Experience',
-                    field_names=['obs_old', 'act', 'rwd', 'obs_new'])
+                field_names=['obs_old', 'act', 'rwd', 'obs_new'])
+        #obs_old = torch.tensor(obs_old['observation']).type
         experience = Experience(torch.tensor(obs_old['observation']), act, rwd,\
-            torch.tensor(obs_new['observation']))
+           torch.tensor(obs_new['observation']))
+        #experience = torch.tensor(obs_old['observation']), act, rwd,\
+         #   torch.tensor(obs_new['observation'])
         self.obs.append(experience)
-
         # each 20 iters
         #if iter%20 == 0:
 
-        obs_old_s = []
-        acts = []
-        rwds = []
-        obs_new_s = []
+        if len(self.obs) <= self.batch_size:
+            pass
 
-        if len(self.obs) > self.batch_size:
+        else:
             batch = random.sample(self.obs, self.batch_size)
-            obs_old_s = [i[0] for i in batch]
+            print(type(batch[0]))
+
+            #exit()
+            print(batch[0][0].shape)
+            print(type(batch))
+
+            obs_old_s = torch.stack([i[0] for i in batch])
             acts = [i[1] for i in batch]
             rwds = [i[2] for i in batch]
-            obs_new_s = [i[3] for i in batch]
-
-        print(type(obs_new_s))
-
-        #obs_old = torch.tensor(obs_old['observation'])
-        #obs_new = torch.tensor(obs_new['observation'])
+            obs_new_s = torch.stack([i[3] for i in batch])
+            print(acts)
+            print(rwds)
+            print(obs_old_s[0].shape)
+            #obs_old_s_tensor = torch.stack(obs_old_s)
+            print(obs_new_s.shape)
+            #exit()
 
         # We get the network output
         # out with n 'obs'
         # [act] to check ?
         # quality(?) of the action
         # matching <a1...a32> with the out
-        out = self.net(torch.FloatTensor(obs_new_s))[acts]
-        # print(out)
+            out = torch.gather(self.net(obs_old_s.type(torch.FloatTensor)), 1, acts).squeeze(1)
+            print(out)
+            exit()
 
-        # We compute the target
-        with torch.no_grad():
-            # rwd = <r1...r2>
-            exp = rwd + CFG.gamma * self.net(obs_new.type(torch.FloatTensor)).max()
+            # We compute the target
+            with torch.no_grad():
+                # rwd = <r1...r2>
+                exp = rwds + CFG.gamma * self.net(torch.FloatTensor(np.ndarray(obs_new_s))).max()
 
-        # Compute the loss
-        loss = torch.square(exp - out)
-        self.loss_list.append(loss.tolist())
+            # Compute the loss
+            loss = torch.square(exp - out)
+            self.loss_list.append(loss.tolist())
 
-        # Perform a backward propagation.
-        # exit() before backward prop to check
-        self.opt.zero_grad()
-        loss.sum().backward()
-        self.opt.step()
+            # Perform a backward propagation.
+            # exit() before backward prop to check
+            self.opt.zero_grad()
+            loss.sum().backward()
+            self.opt.step()
 
-    # stats_rwd(rwd):
+            # stats_rwd(rwd):
 
     def move(self, new_obs, board):
         """
-        Run an epsilon-greedy policy for next actino selection.
+        Run an epsilon-greedy policy for next action selection.
         """
         # Return random action with probability epsilon
-        if random.uniform(0, 1) < CFG.epsilon: # or if "not trained"
+        if random.uniform(0, 1) < CFG.epsilon or\
+            len(self.obs) <= self.batch_size:
            return random.choice(np.flatnonzero(new_obs["action_mask"]))
 
         # Else, return action with highest value

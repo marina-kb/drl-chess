@@ -21,12 +21,20 @@ environment = game.Game(players)
 
 start_time = time()
 coups = 0
-n_games = 10
+n_games = 1
 for _ in range(n_games):
     coups += environment.play()
 timing = round((time() - start_time), 5)
 print("\n--- Loop done in %s seconds (avg %s sec)--- " % (timing, timing/n_games))
 print("--- Total coups: %s / Seconds per coup: %s--- \n" % (coups, (timing/n_games/coups)))
+
+
+# Saving data TO CODE
+print(len(players[0].loss_list))
+
+
+
+
 
 if CFG.engine is not None:
     CFG.engine.stop_engine()
