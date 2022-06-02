@@ -35,8 +35,8 @@ class DeepKasp_Lin(Agent):
         Learn from a single observation sample.
         """
 
-        obs_old = torch.tensor(obs_old)
-        obs_new = torch.tensor(obs_new)
+        obs_old = torch.tensor(obs_old['observation'])
+        obs_new = torch.tensor(obs_new['observation'])
 
         # We get the network output
         out = self.net(torch.tensor(obs_new))[act]
@@ -79,22 +79,21 @@ class DeepKasp_Conv(Agent):
         Learn from a single observation sample.
         """
 
-        print(obs_old)
-        print(obs_new)
-        exit()
+        #print(obs_old)
+        #print(obs_new)
 
-        obs_old = torch.tensor(obs_old)
-        obs_new = torch.tensor(obs_new)
+        obs_old = torch.tensor(obs_old['observation'])
+        obs_new = torch.tensor(obs_new['observation'])
 
 
 
         # We get the network output
-        out = self.net(torch.tensor(obs_new))[act]
+        out = self.net(torch.tensor(obs_new.type(torch.FloatTensor)))[act]
         # print(out)
 
         # We compute the target
         with torch.no_grad():
-            exp = rwd + CFG.gamma * self.net(obs_new).max()
+            exp = rwd + CFG.gamma * self.net(obs_new.type(torch.FloatTensor)).max()
 
         # Compute the loss
         loss = torch.square(exp - out)
@@ -111,23 +110,18 @@ class DeepKasp_Conv(Agent):
         """
         # Return random action with probability epsilon
         if random.uniform(0, 1) < CFG.epsilon:
-            return random.choice(new_obs["action_mask"])
-        # Else, return action with highest value
+           return random.choice(np.flatnonzero(new_obs["action_mask"]))
 
+        # Else, return action with highest value
         with torch.no_grad():
+            # to clean up & squeeze ?..
             val = self.net(torch.tensor(new_obs['observation']).type(torch.FloatTensor))
-            print(val)
-            #print(val.shape)
             valid_actions = torch.tensor(np.squeeze(np.argwhere(new_obs['action_mask'] == 1).T, axis=0))
-            print(valid_actions)
-            #print(new_obs['action_mask'])
             valid_q = torch.index_select(val, 0, valid_actions)
-            print(valid_q)
             best_q = torch.argmax(valid_q).numpy()
-            print(best_q)
-            #print(valid_actions[best_q].numpy())
-            #exit()
-            return valid_actions[best_q]
+            action = valid_actions[best_q].numpy()
+        print("DeepK Engine Move: ", action.tolist())
+        return action.tolist()
 
 
 class RandomA(Agent):
@@ -163,3 +157,8 @@ class StockFish(Agent):
                                    )
         print("Stockfish Engine Move: ", SF_move.move)
         return StockFish.move_to_act(SF_move.move)
+
+    def feed(self, obs_old, act, rwd, obs_new):
+        """
+        Nothing to feed to stockfish"""
+        pass

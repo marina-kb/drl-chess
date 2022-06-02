@@ -29,7 +29,8 @@ class Game():
         idx = 0         # Player index (0 or 1)
 
         while not game.board().is_game_over():
-        # for step in self.game_env.agent_iter(max_iter=5):     # add step in in history to debug
+        # for step in self.game_env.agent_iter(max_iter=5):
+        # add step in in history to debug
 
             new_obs, rwd, done, info = self.game_env.last()
 
@@ -43,17 +44,18 @@ class Game():
             history[idx] = new_obs, move
 
             print(game.board())
-            print()
+            print('next round: \n')
             idx = 1 - idx
 
 
-        print("game over!!!")
+        print(f"game over!!! winner: {self.players[1-idx]}")
         # Add a self.game_env.reset() once game finish
 
 
 CFG.init("", rnd_seed=22)
+
 # players = tuple of 2 players: random / stockfish / deepk / human
-players = (DeepKasp_Conv(), RandomA())
+players = (DeepKasp_Conv(), StockFish())
 game = Game(players)
 
 game.play()
