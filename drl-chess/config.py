@@ -58,7 +58,4 @@ class Configuration:
                 print("Stockfish init \n")
 
 
-
-
-
 CFG = Configuration()

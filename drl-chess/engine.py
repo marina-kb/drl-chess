@@ -10,6 +10,12 @@ class Engine():
     def __init__(self):
         SF_dir = os.path.join(os.path.dirname(__file__), '../.direnv/stockfish')
         self.engine = chess.engine.SimpleEngine.popen_uci(SF_dir)
+        # print(self.engine.options)
+        # print()
+        # print(self.engine.options["Hash"])
+        # print(self.engine.options["Threads"])
+        # exit()
+        self.engine.configure({"Hash": 16, "Threads": 1})
 
     def reward_calc(self, board, idx):
         """
@@ -25,7 +31,7 @@ class Engine():
 
     def stop_engine(self):
         self.engine.quit()
-        # print("Stockfish stop \n")
+        print("Stockfish stop \n")
 
     def calculate_model_elo(self):
         pass

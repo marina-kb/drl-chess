@@ -71,7 +71,8 @@ class DeepKasp_Lin(Agent):
 class DeepKasp_Conv(Agent):
     def __init__(self):
         super().__init__()
-        self.net = network.Conv()
+        if CFG.agt_type == "Conv":
+            self.net = network.Conv()
         self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
         self.loss_list = []
 
@@ -84,7 +85,7 @@ class DeepKasp_Conv(Agent):
         obs_new = torch.tensor(obs_new['observation'])
 
         # We get the network output
-        out = self.net(torch.tensor(obs_new.type(torch.FloatTensor)))[act]
+        out = self.net(obs_new.type(torch.FloatTensor))[act]
 
         # We compute the target
         with torch.no_grad():
@@ -198,7 +199,7 @@ class DeepKasp_Conv_Batch(Agent):
         Run an epsilon-greedy policy for next actino selection.
         """
         # Return random action with probability epsilon
-        if random.uniform(0, 1) < CFG.epsilon:
+        if random.uniform(0, 1) < CFG.epsilon: # or if "not trained"
            return random.choice(np.flatnonzero(new_obs["action_mask"]))
 
         # Else, return action with highest value
