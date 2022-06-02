@@ -10,6 +10,9 @@ from agent import Agent, RandomA, StockFish, DeepKasp_Conv, DeepKasp_Lin
 
 from config import CFG
 
+from engine import Engine
+
+
 
 class Game():
     # Add attributes depending on type of players
@@ -28,35 +31,40 @@ class Game():
 
         idx = 0         # Player index (0 or 1)
 
-        while not game.board().is_game_over():
+        while not self.board().is_game_over():
         # for step in self.game_env.agent_iter(max_iter=5):
         # add step in in history to debug
 
             new_obs, rwd, done, info = self.game_env.last()
 
+            if CFG.reward_SF:
+                curr_score = CFG.engine.reward_calc(self.board())
+                # rwd = curr_score - 'prev_score'
+                print(curr_score)
+
             if history[idx] is not None:
                 old_obs, act = history[idx]
                 self.players[idx].feed(old_obs, act, rwd, new_obs)
 
-            move = self.players[idx].move(new_obs, game.board())
+            move = self.players[idx].move(new_obs, self.board())
             self.game_env.step(move)
 
             history[idx] = new_obs, move
 
-            print(game.board())
-            print('next round: \n')
+            print(self.board())
+            print()
             idx = 1 - idx
 
 
         print(f"game over!!! winner: {self.players[1-idx]}")
-        print(self.players[idx].loss_list)
+        # print(self.players[idx].loss_list)
         # Add a self.game_env.reset() once game finish
 
 
-CFG.init("", rnd_seed=22)
+# CFG.init("", rnd_seed=22)
 
-# players = tuple of 2 players: random / stockfish / deepk / human
-players = (DeepKasp_Conv(), StockFish())
-game = Game(players)
+# # players = tuple of 2 players: random / stockfish / deepk / human
+# players = (DeepKasp_Conv(), StockFish())
+# game = Game(players)
 
-game.play()
+# game.play()

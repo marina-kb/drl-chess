@@ -19,7 +19,7 @@ class Agent():
     def move(self, observation, board):
         pass
 
-    def feed(self, sars):
+    def feed(self, obs_old, act, rwd, obs_new):
         pass
 
 
@@ -191,7 +191,8 @@ class RandomA(Agent):
 class StockFish(Agent):
     def __init__(self):
         super().__init__()
-        self.engine = Engine().engine
+        if CFG.engine == None:
+            CFG.engine = Engine().engine
         self.time_to_play = CFG.time_to_play
 
     @staticmethod
@@ -206,14 +207,9 @@ class StockFish(Agent):
     def move(self, observation, board):
         if board.turn == False:
             board = board.mirror()
-        SF_move = self.engine.play(board=board,
+        SF_move = CFG.engine.engine.play(board=board,
                                    limit=chess.engine.Limit(time=self.time_to_play),
                                    info=chess.engine.Info(1)
                                    )
         print("Stockfish Engine Move: ", SF_move.move)
         return StockFish.move_to_act(SF_move.move)
-
-    def feed(self, obs_old, act, rwd, obs_new):
-        """
-        Nothing to feed to stockfish"""
-        pass

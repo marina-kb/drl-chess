@@ -4,6 +4,7 @@ This module defines a singleton-type configuration class that can be used all ac
 """
 
 import random
+import engine
 
 
 class Configuration:
@@ -23,8 +24,13 @@ class Configuration:
         self.rnd_seed = None
         self.agt_type = None
 
-        #additional Paul A.
-        self.time_to_play=0.1
+        self.reward_SF = False
+        self.engine = None
+
+        self.debug = False       # SETUP
+        self.time_to_play = 0.1
+
+
 
 
     def init(self, agt_type, **kwargs):
@@ -44,6 +50,13 @@ class Configuration:
 
         # Once all values are properly set, use them.
         random.seed(self.rnd_seed)
+
+        # Adding Stockfish engine:
+        if self.reward_SF :
+            self.engine = engine.Engine()
+
+
+
 
 
 CFG = Configuration()

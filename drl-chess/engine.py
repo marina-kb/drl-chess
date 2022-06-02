@@ -12,16 +12,20 @@ class Engine():
         self.engine = chess.engine.SimpleEngine.popen_uci(SF_dir)
         print("Stockfish init \n")
 
-    def reward_calc(self):
+    def reward_calc(self, board):
         """
         Use Stockfish to calculate model's reward
         """
-        pass
+        info = self.engine.analyse(board,
+                                   limit=chess.engine.Limit(time=0.1))
+        return info["score"]
 
     def stop_engine(self):
         self.engine.quit()
         print("Stockfish stop \n")
 
+    def calculate_model_elo(self):
+        pass
 
 
 
