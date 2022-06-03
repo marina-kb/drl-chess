@@ -38,19 +38,17 @@ def gen_data():
 
         agt[0].obs.clear()
         agt[1].obs.clear()
-        print('game done')
+        # print('game done')
 
+    # PUSH TO DATA/
     to_disk(obs)
-    print('saving')
-
-    # TODO PUT PICKLE CODE HERE
-    # import datetime -> generate current timestamp
+    # print('saving')
 
 
-# TODO create utils.py and then a function to_disk that pickles dataset.
+for _ in range(1):
+    gen_data()
 
-gen_data()
-
+print('loop end')
 
 # while True:
 #     gen_data()
