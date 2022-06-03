@@ -7,8 +7,7 @@ from pettingzoo.classic import chess_v5
 from config import CFG
 
 
-class Game():
-
+class Game:
     def __init__(self, players):
         self.game_env = chess_v5.env()
         self.chess_env = self.game_env.env.env.env.env
@@ -22,10 +21,10 @@ class Game():
 
         history = [None, None]
         old_score = [0, 0]
-        idx = 0         # Player index (0 or 1)
+        idx = 0  # Player index (0 or 1)
         coup = 0
         while not self.board().is_game_over():
-        # for step in self.game_env.agent_iter(max_iter=5):
+            # for step in self.game_env.agent_iter(max_iter=5):
 
             new_obs, rwd, done, info = self.game_env.last()
 
@@ -52,10 +51,10 @@ class Game():
                 print()
             idx = 1 - idx
 
-            coup +=1
+            coup += 1
 
         print(f"game over in {coup} plays!  -  winner: {self.players[1-idx]}")
 
         self.game_env.reset()
-        return self.players[1-idx]
+        return self.players[1 - idx]
         # return coup # TEMP TO GET SEC. PER COUP

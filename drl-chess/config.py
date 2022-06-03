@@ -22,24 +22,24 @@ class Configuration:
         self.gamma = 0.98
         self.epsilon = None
         self.rnd_seed = None
-        self.agt_type = None
+        self.net_type = None
 
         self.reward_SF = False
         self.engine = None
         self.time_to_play = 0.1
+        self.buffer_size = 10000
 
         self.debug = False
 
         self.batch_size = 3
 
-
-    def init(self, agt_type, **kwargs):
+    def init(self, net_type, **kwargs):
         """
         User-defined configuration init. Mandatory to properly set all configuration parameters.
         """
 
         # Mandatory arguments go here. In our case it is useless.
-        self.agt_type = agt_type
+        self.net_type = net_type
 
         # We set default values for arguments we have to define
         self.rnd_seed = random.randint(0, 1000)
@@ -52,7 +52,7 @@ class Configuration:
         random.seed(self.rnd_seed)
 
         # Adding Stockfish engine:
-        if self.reward_SF :
+        if self.reward_SF:
             self.engine = engine.Engine()
             if CFG.debug:
                 print("Stockfish init \n")

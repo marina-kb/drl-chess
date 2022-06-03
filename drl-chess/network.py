@@ -16,16 +16,16 @@ class Conv(nn.Module):
         self.net = nn.Sequential(
             nn.Conv2d(8, 111, 8, 8),
             nn.ReLU(),
-            #nn.Conv2d(111, 25, 3, 1),
-            #nn.ReLU(),
+            # nn.Conv2d(111, 25, 3, 1),
+            # nn.ReLU(),
             # n.Linear(1443, 1),
             # nn.Linear(4672,1),
-          )
+        )
 
         self.linear = nn.Sequential(
             nn.Linear(1443, 2048),
             nn.Linear(2048, 4672),
-          )
+        )
 
     def forward(self, x):
         y = self.net(x)
@@ -33,10 +33,11 @@ class Conv(nn.Module):
         return self.linear(y)
 
 
-class Linear(nn.Module): # TODO FIX
+class Linear(nn.Module):  # TODO FIX
     """
     A simple Deep Q-Network with 3 linear layers.
     """
+
     def __init__(self):
         super(Linear, self).__init__()
 
@@ -47,8 +48,8 @@ class Linear(nn.Module): # TODO FIX
             nn.Linear(20, 20),
             nn.ReLU(inplace=True),
             nn.Linear(20, 4672),
-            nn.ReLU(inplace=True)
-            )
+            nn.ReLU(inplace=True),
+        )
 
     def forward(self, x):
         return self.net(x)
