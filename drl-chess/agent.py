@@ -27,7 +27,7 @@ class Agent:
         pass
 
 
-class DeepKasp(Agent):
+class DeepK(Agent):
     def __init__(self):
         super().__init__()
 
@@ -63,12 +63,11 @@ class DeepKasp(Agent):
 
         # We get the network output
         out = torch.gather(self.net(old), 1, act).squeeze(1)
-        print("self.net : out --> ", out)
 
         # We compute the target
         with torch.no_grad():
-            exp = rwd + CFG.gamma * self.net(new).max()  # TODO squeeze and get index
-        print("self.net : exp --> ", exp)
+            idx = torch.argmax(self.net(new), 1).unsqueeze(1)
+            exp = rwd + CFG.gamma * torch.gather(self.net(new), 1, idx).squeeze(1)
 
         # Compute the loss
         loss = torch.square(exp - out)
@@ -139,7 +138,7 @@ class StockFish(Agent):
         return move
 
 
-class ObservationGenerator(StockFish, DeepKasp):
+class ObservationGenerator(StockFish, DeepK):
     def __init__(self):
         super().__init__()
 

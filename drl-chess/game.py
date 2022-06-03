@@ -9,45 +9,36 @@ from config import CFG
 
 
 class Game:
-    def __init__(self, players):
+    def __init__(self, agt):
         self.game_env = chess_v5.env()
         self.chess_env = self.game_env.env.env.env.env
         self.game_env.reset()
-        self.players = players
+        self.agt = agt
 
     def board(self):
         return self.chess_env.board
 
     def play(self):
-
-        history = [None, None]
-        old_score = [0, 0]
-        idx = 0  # Player index (0 or 1)
+        idx = 0
         for _ in self.game_env.agent_iter(max_iter=50000):
 
-            new_obs, rwd, done, info = self.game_env.last()
+            agt = self.agt[idx]
+            new, rwd, done, info = self.game_env.last()
 
-            if history[idx] is not None:
-
-                old_obs, act = history[idx]
-
+            if (dat := DAT.get_data(idx)) is not None:
+                old, act = dat
                 if CFG.reward_SF:
-                    new_score = CFG.engine.reward_calc(self.board(), idx)
-                    if CFG.debug:
-                        print(f"{idx} relative score: {new_score}")
-                    rwd = new_score - old_score[idx]
-                    old_score[idx] = new_score
-
-                self.players[idx].feed(old_obs, act, rwd, new_obs)
+                    rwd = CFG.engine.reward(self.board(), idx)
+                agt.feed(old, act, rwd, new)
 
             if done:
-                DAT.add_game(self.board().outcome(claim_draw=True).result())
+                DAT.set_game(self.board())
                 break
 
-            move = self.players[idx].move(new_obs, self.board())
-            self.game_env.step(move)
+            act = agt.move(new, self.board())
+            self.game_env.step(act)
 
-            history[idx] = new_obs, move
+            DAT.set_data(new, act)
 
             if CFG.debug:
                 print(self.board())
@@ -56,4 +47,3 @@ class Game:
             idx = 1 - idx
 
         self.game_env.reset()
-        return self.players[1 - idx]

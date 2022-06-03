@@ -6,6 +6,8 @@ import os
 import subprocess
 import chess.engine
 
+from data import DAT
+
 
 class Engine:
     def __init__(self):
@@ -27,9 +29,9 @@ class Engine:
             time=0.1
         )  # TODO Test 0.02 and others (and check default depth?)
 
-    def reward_calc(self, board, idx):
+    def rating(self, board, idx):
         """
-        Use Stockfish to calculate model's reward
+        Get board rating of a player
         """
         info = self.engine.analyse(board, limit=self.limit)
         if idx == 0:
@@ -37,6 +39,15 @@ class Engine:
         else:
             score = info["score"].black().score(mate_score=10000)
         return score
+
+    def reward(self, board, idx):
+        """
+        """
+        old = DAT.get_score(idx)
+        new = self.rating(board, idx)
+        return new - old
+        print(old, new)
+        exit()
 
     def stop_engine(self):
         self.engine.quit()

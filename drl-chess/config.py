@@ -25,14 +25,14 @@ class Configuration:
         self.rnd_seed = None
         self.net_type = None
 
-        self.reward_SF = False
+        self.reward_SF = True
         self.engine = None
         self.time_to_play = 0.1
         self.buffer_size = 10000
 
         self.debug = False
 
-        self.batch_size = 3
+        self.batch_size = 10
 
     def init(self, net_type, **kwargs):
         """

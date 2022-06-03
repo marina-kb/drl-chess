@@ -7,17 +7,13 @@ import math
 
 def main():
 
+    CFG.init(net_type="conv")
 
-    CFG.init(
-        net_type="Conv",
-        reward_SF=False,
-    )
-
-    players = (agent.StockFish(), agent.Random())
+    players = (agent.DeepK(), agent.Random())
     environment = game.Game(players)
 
     for n in range(5):
-        CFG.epsilon = math.exp(-CFG.epsilon_decay*n)
+        CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         environment.play()
 
     if CFG.engine is not None:
@@ -41,8 +37,11 @@ def gen_data():
         agt[0].obs.clear()
         agt[1].obs.clear()
 
+
 # TODO create utils.py and then a function to_disk that pickles dataset.
 
-gen_data()
+# gen_data()
+
+main()
 
 # def save_obs()
