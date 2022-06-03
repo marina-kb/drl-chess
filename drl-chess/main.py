@@ -30,7 +30,7 @@ def gen_data():
     env = game.Game(agt)
     obs = []
 
-    for _ in range(1):
+    for _ in range(100):
         env.play()
 
         obs += agt[0].obs
@@ -45,10 +45,9 @@ def gen_data():
     # print('saving')
 
 
-for _ in range(1):
-    gen_data()
-
-print('loop end')
-
-# while True:
+# for _ in range(1):
 #     gen_data()
+
+
+while True:
+    gen_data()
