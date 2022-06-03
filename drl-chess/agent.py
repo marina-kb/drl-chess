@@ -86,7 +86,6 @@ class DeepKasp(Agent):
         """
         Run an epsilon-greedy policy for next action selection.
         """
-        print("DEEP KASP")
         # Return random action with probability epsilon
         if random.uniform(0, 1) < CFG.epsilon or len(self.obs) <= CFG.batch_size:
             if CFG.debug:
@@ -106,13 +105,11 @@ class DeepKasp(Agent):
         return action.tolist()
 
 
-class RandomA(Agent):
+class Random(Agent):
     def __init__(self):
         super().__init__()
 
     def move(self, observation, board):
-        if CFG.debug:
-            print("Random Move")
         return random.choice(np.flatnonzero(observation["action_mask"]))
 
 
@@ -134,17 +131,11 @@ class StockFish(Agent):
     def _move(self, obs, board):
         if board.turn == False:
             board = board.mirror()
-        move = CFG.engine.engine.play(
-            board=board,
-            limit=CFG.engine.limit,  # set Depth to 1 at beginning TODO
-            info=chess.engine.Info(1),  # TODO Remove
-        )
+        move = CFG.engine.engine.play(board=board, limit=CFG.engine.limit)
         return self.move_to_act(move.move)
 
     def move(self, observation, board):
         move = self._move(observation, board)
-        if CFG.debug:
-            print("Stockfish Engine Move: ", move)
         return move
 
 

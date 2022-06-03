@@ -21,6 +21,7 @@ class Configuration:
         self.alpha = 0.2
         self.gamma = 0.98
         self.epsilon = None
+        self.epsilon_decay = 0.001
         self.rnd_seed = None
         self.net_type = None
 

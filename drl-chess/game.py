@@ -4,6 +4,7 @@ Game Module.
 
 from pettingzoo.classic import chess_v5
 
+from data import DAT
 from config import CFG
 
 
@@ -22,9 +23,7 @@ class Game:
         history = [None, None]
         old_score = [0, 0]
         idx = 0  # Player index (0 or 1)
-        coup = 0
-        while not self.board().is_game_over():
-            # for step in self.game_env.agent_iter(max_iter=5):
+        for _ in self.game_env.agent_iter(max_iter=50000):
 
             new_obs, rwd, done, info = self.game_env.last()
 
@@ -41,6 +40,10 @@ class Game:
 
                 self.players[idx].feed(old_obs, act, rwd, new_obs)
 
+            if done:
+                DAT.add_game(self.board().outcome(claim_draw=True).result())
+                break
+
             move = self.players[idx].move(new_obs, self.board())
             self.game_env.step(move)
 
@@ -49,12 +52,8 @@ class Game:
             if CFG.debug:
                 print(self.board())
                 print()
+
             idx = 1 - idx
-
-            coup += 1
-
-        print(f"game over in {coup} plays!  -  winner: {self.players[1-idx]}")
 
         self.game_env.reset()
         return self.players[1 - idx]
-        # return coup # TEMP TO GET SEC. PER COUP
