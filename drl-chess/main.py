@@ -7,12 +7,12 @@ from config import CFG
 CFG.init(agt_type='Conv',
          rnd_seed=22,           # Pick a random seed
          epsilon=0.05,          # Treshold for Epsilon-Greedy policy
-         debug=False,           # Print board and stuff to debug
+         debug=True,           # Print board and stuff to debug
          reward_SF=True         # Choose Reward system ('PettingZoo' or 'Stockfish')
          )
 
 # Init 2 agents
-players = (agent.DeepKasp_Conv(),
+players = (agent.DeepKasp_Conv_Batch(),
            agent.StockFish()
            )
 

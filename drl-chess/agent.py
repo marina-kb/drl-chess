@@ -130,51 +130,44 @@ class DeepKasp_Conv_Batch(Agent):
         super().__init__()
         self.net = network.Conv()
         #to add batch_size 32 & maxlen 100 in config ?
-        self.batch_size = 6
-        self.obs = collections.deque(maxlen=100)
+        self.obs = collections.deque(maxlen=10000)
         self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
         self.loss_list = []
 
 
-    # to change will take as arg * 32
     def feed(self, obs_old, act, rwd, obs_new):
         """
         Learn from a single observation sample.
         """
-        # choose obs to learn
-        # n batch size = obs_old =(8, 8, 111, n)
-        Experience = collections.namedtuple('Experience',
-                field_names=['obs_old', 'act', 'rwd', 'obs_new'])
-        #obs_old = torch.tensor(obs_old['observation']).type
-        experience = Experience(torch.tensor(obs_old['observation']), act, rwd,\
-           torch.tensor(obs_new['observation']))
-        #experience = torch.tensor(obs_old['observation']), act, rwd,\
-         #   torch.tensor(obs_new['observation'])
-        self.obs.append(experience)
-        # each 20 iters
-        #if iter%20 == 0:
 
-        if len(self.obs) <= self.batch_size:
-            pass
+        old = torch.tensor(obs_old["observation"])
+        act = torch.tensor(act)
+        rwd = torch.tensor(rwd)
+        new = torch.tensor(obs_new["observation"])
 
-        else:
-            batch = random.sample(self.obs, self.batch_size)
-            print(type(batch[0]))
+        self.obs.append((old, act, rwd, new))
+        if len(self.obs) >= CFG.batch_size:
+            self.learn()
 
-            #exit()
-            print(batch[0][0].shape)
-            print(type(batch))
 
-            obs_old_s = torch.stack([i[0] for i in batch])
-            acts = [i[1] for i in batch]
-            rwds = [i[2] for i in batch]
-            obs_new_s = torch.stack([i[3] for i in batch])
-            print(acts)
-            print(rwds)
-            print(obs_old_s[0].shape)
-            #obs_old_s_tensor = torch.stack(obs_old_s)
-            print(obs_new_s.shape)
-            #exit()
+    def learn(self):
+
+        batch = random.sample(self.obs, CFG.batch_size)
+        old, act, rwd, new = zip(*batch)
+
+        old = torch.stack(old).type(torch.FloatTensor)
+        act = torch.stack(act).type(torch.FloatTensor)
+        rwd = torch.stack(rwd).type(torch.FloatTensor)
+        new = torch.stack(new).type(torch.FloatTensor)
+
+        print(old.shape)
+        print(rwd.shape)
+
+        print(self.net(old))
+
+        exit()
+
+        """
 
         # We get the network output
         # out with n 'obs'
@@ -182,7 +175,7 @@ class DeepKasp_Conv_Batch(Agent):
         # quality(?) of the action
         # matching <a1...a32> with the out
             out = torch.gather(self.net(obs_old_s.type(torch.FloatTensor)), 1, acts).squeeze(1)
-            print(out)
+            print("self.net : out --> ", out)
             exit()
 
             # We compute the target
@@ -201,6 +194,8 @@ class DeepKasp_Conv_Batch(Agent):
             self.opt.step()
 
             # stats_rwd(rwd):
+        """
+
 
     def move(self, new_obs, board):
         """
@@ -208,7 +203,7 @@ class DeepKasp_Conv_Batch(Agent):
         """
         # Return random action with probability epsilon
         if random.uniform(0, 1) < CFG.epsilon or\
-            len(self.obs) <= self.batch_size:
+            len(self.obs) <= CFG.batch_size:
            return random.choice(np.flatnonzero(new_obs["action_mask"]))
 
         # Else, return action with highest value
@@ -221,6 +216,7 @@ class DeepKasp_Conv_Batch(Agent):
             action = valid_actions[best_q].numpy()
         print("DeepK Engine Move: ", action.tolist())
         return action.tolist()
+
 
 
 class RandomA(Agent):

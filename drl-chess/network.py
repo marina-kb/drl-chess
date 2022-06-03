@@ -28,7 +28,10 @@ class Conv(nn.Module):
           )
 
     def forward(self, x):
-        y = torch.flatten(self.net(x))
+        y = self.net(x)
+        # TODO add a flatten to y but keep first dimension intact
+        print(y.shape)
+        exit()
         return self.linear(y)
 
 

@@ -30,7 +30,7 @@ class Configuration:
 
         self.debug = False
 
-        self.batch_size = 32
+        self.batch_size = 3
 
 
     def init(self, agt_type, **kwargs):
