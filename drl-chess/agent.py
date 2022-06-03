@@ -72,7 +72,7 @@ class DeepK(Agent):
         # Compute the loss
         loss = torch.square(exp - out)
         print("loss", loss, "\n")
-        DAT.add_loss(loss.tolist())
+        DAT.set_loss(loss.tolist())
 
         # Perform a backward propagation.
         self.opt.zero_grad()
@@ -85,22 +85,24 @@ class DeepK(Agent):
         """
         Run an epsilon-greedy policy for next action selection.
         """
+
         # Return random action with probability epsilon
         if random.uniform(0, 1) < CFG.epsilon or len(self.obs) <= CFG.batch_size:
             if CFG.debug:
                 print("Deep_K Epsilon-induced Random Move !")
             return random.choice(np.flatnonzero(new_obs["action_mask"]))
 
-        # Else, return action with highest value # TODO FIX
+        # Else, return action with highest value
+
         with torch.no_grad():
-            val = self.net(torch.tensor(new_obs["observation"]).type(torch.FloatTensor))
+            new = torch.tensor(new_obs["observation"]).type(torch.FloatTensor).unsqueeze(0)
+            val = self.net(new).squeeze(0)
             valid_actions = torch.tensor(
                 np.squeeze(np.argwhere(new_obs["action_mask"] == 1).T, axis=0)
             )
             valid_q = torch.index_select(val, 0, valid_actions)
             best_q = torch.argmax(valid_q).numpy()
             action = valid_actions[best_q].numpy()
-        print("DeepK Engine Move: ", action.tolist())
         return action.tolist()
 
 

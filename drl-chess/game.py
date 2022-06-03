@@ -23,9 +23,10 @@ class Game:
         for _ in self.game_env.agent_iter(max_iter=50000):
 
             agt = self.agt[idx]
+            dat = DAT.get_data(idx)
             new, rwd, done, info = self.game_env.last()
 
-            if (dat := DAT.get_data(idx)) is not None:
+            if dat is not None:
                 old, act = dat
                 if CFG.reward_SF:
                     rwd = CFG.engine.reward(self.board(), idx)
@@ -38,7 +39,7 @@ class Game:
             act = agt.move(new, self.board())
             self.game_env.step(act)
 
-            DAT.set_data(new, act)
+            DAT.set_data((new, act), idx)
 
             if CFG.debug:
                 print(self.board())

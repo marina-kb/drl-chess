@@ -3,6 +3,7 @@ Engine class to use Stockfish
 """
 
 import os
+import math
 import subprocess
 import chess.engine
 
@@ -40,14 +41,23 @@ class Engine:
             score = info["score"].black().score(mate_score=10000)
         return score
 
+    def linearize(self, score):
+        if score == 0:
+            score = 0
+        elif score < 0:
+            score = math.log(-score)/math.log(10000)
+            score = -score
+        else:
+            score = math.log(score)/math.log(10000)
+        return score
+
     def reward(self, board, idx):
         """
         """
         old = DAT.get_score(idx)
         new = self.rating(board, idx)
-        return new - old
-        print(old, new)
-        exit()
+        DAT.set_score(new, idx)
+        return self.linearize(new) - self.linearize(old)
 
     def stop_engine(self):
         self.engine.quit()
