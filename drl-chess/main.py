@@ -4,6 +4,7 @@ import agent
 from config import CFG
 from data import DAT
 import math
+from utils import to_disk
 
 
 def quit():
@@ -29,7 +30,7 @@ def gen_data():
     env = game.Game(agt)
     obs = []
 
-    for _ in range(100):
+    for _ in range(1):
         env.play()
 
         obs += agt[0].obs
@@ -37,6 +38,10 @@ def gen_data():
 
         agt[0].obs.clear()
         agt[1].obs.clear()
+        print('game done')
+
+    to_disk(obs)
+    print('saving')
 
     # TODO PUT PICKLE CODE HERE
     # import datetime -> generate current timestamp
@@ -47,7 +52,5 @@ def gen_data():
 gen_data()
 
 
-while True:
-    gen_data()
-
-# def save_obs()
+# while True:
+#     gen_data()
