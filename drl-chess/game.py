@@ -55,9 +55,7 @@ class Game():
             coup +=1
 
         print(f"game over in {coup} plays!  -  winner: {self.players[1-idx]}")
-        # print(self.players[idx].loss_list)
-        # Add a self.game_env.reset() once game finish
 
-        # TEMP TO GET SEC. PER COUP
         self.game_env.reset()
-        return coup
+        return self.players[1-idx]
+        # return coup # TEMP TO GET SEC. PER COUP

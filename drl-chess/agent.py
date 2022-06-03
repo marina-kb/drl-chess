@@ -2,6 +2,7 @@
 Agent module.
 """
 
+from code import interact
 import random
 import numpy as np
 import chess.engine
@@ -24,111 +25,13 @@ class Agent():
         pass
 
 
-class DeepKasp_Lin(Agent):
-    def __init__(self):
-        super().__init__()
-        self.net = network.Lin()
-        self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
-
-
-    def feed(self, obs_old, act, rwd, obs_new):
-        """
-        Learn from a single observation sample.
-        """
-
-        obs_old = torch.tensor(obs_old['observation'])
-        obs_new = torch.tensor(obs_new['observation'])
-
-        # We get the network output
-        out = self.net(torch.tensor(obs_new))[act]
-
-        # We compute the target
-        with torch.no_grad():
-            exp = rwd + CFG.gamma * self.net(obs_new).max()
-
-        # Compute the loss
-        loss = torch.square(exp - out)
-
-        # Perform a backward propagation.
-        self.opt.zero_grad()
-        loss.sum().backward()
-        self.opt.step()
-
-
-    def move(self, new_obs, board):
-        """
-        Run an epsilon-greedy policy for next actino selection.
-        """
-        # Return random action with probability epsilon
-        if random.uniform(0, 1) < CFG.epsilon:
-            return board.sample()
-        # Else, return action with highest value
-        with torch.no_grad():
-            val = self.net(torch.tensor(new_obs))
-            return torch.argmax(val).numpy()
-
-
-class DeepKasp_Conv(Agent):
+class DeepKasp_Conv_Batch(Agent):
     def __init__(self):
         super().__init__()
         if CFG.agt_type == "Conv":
             self.net = network.Conv()
-        self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
-        self.loss_list = []
-
-
-    def feed(self, obs_old, act, rwd, obs_new):
-        """
-        Learn from a single observation sample.
-        """
-        obs_old = torch.tensor(obs_old['observation'])
-        obs_new = torch.tensor(obs_new['observation'])
-
-        # We get the network output
-        out = self.net(obs_new.type(torch.FloatTensor))[act]
-
-        # We compute the target
-        with torch.no_grad():
-            exp = rwd + CFG.gamma * self.net(obs_new.type(torch.FloatTensor)).max()
-
-        # Compute the loss
-        loss = torch.square(exp - out)
-        self.loss_list.append(loss.tolist())
-
-        # Perform a backward propagation.
-        self.opt.zero_grad()
-        loss.sum().backward()
-        self.opt.step()
-
-
-    def move(self, new_obs, board):
-        """
-        Run an epsilon-greedy policy for next actino selection.
-        """
-        # Return random action with probability epsilon
-        if random.uniform(0, 1) < CFG.epsilon:
-            if CFG.debug:
-                print("Deep_K Epsilon-induced Random Move !")
-            return random.choice(np.flatnonzero(new_obs["action_mask"]))
-
-        # Else, return action with highest value
-        with torch.no_grad():
-            # to clean up & squeeze ?..
-            val = self.net(torch.tensor(new_obs['observation']).type(torch.FloatTensor))
-            valid_actions = torch.tensor(np.squeeze(np.argwhere(new_obs['action_mask'] == 1).T, axis=0))
-            valid_q = torch.index_select(val, 0, valid_actions)
-            best_q = torch.argmax(valid_q).numpy()
-            action = valid_actions[best_q].numpy()
-        if CFG.debug:
-            print("DeepK Engine Move: ", action.tolist())
-        return action.tolist()
-
-
-# new agent with batches (experience replay)
-class DeepKasp_Conv_Batch(Agent):
-    def __init__(self):
-        super().__init__()
-        self.net = network.Conv()
+        if CFG.agt_type == "Linear":
+            self.net = network.Linear()
         #to add batch_size 32 & maxlen 100 in config ?
         self.obs = collections.deque(maxlen=10000)
         self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
@@ -156,45 +59,31 @@ class DeepKasp_Conv_Batch(Agent):
         old, act, rwd, new = zip(*batch)
 
         old = torch.stack(old).type(torch.FloatTensor)
-        act = torch.stack(act).type(torch.FloatTensor)
+        act = torch.stack(act).long().unsqueeze(1)
         rwd = torch.stack(rwd).type(torch.FloatTensor)
         new = torch.stack(new).type(torch.FloatTensor)
 
-        print(old.shape)
-        print(rwd.shape)
-
-        print(self.net(old))
-
-        exit()
-
-        """
-
         # We get the network output
-        # out with n 'obs'
-        # [act] to check ?
-        # quality(?) of the action
-        # matching <a1...a32> with the out
-            out = torch.gather(self.net(obs_old_s.type(torch.FloatTensor)), 1, acts).squeeze(1)
-            print("self.net : out --> ", out)
-            exit()
+        out = torch.gather(self.net(old), 1, act).squeeze(1)
+        print("self.net : out --> ", out)
 
-            # We compute the target
-            with torch.no_grad():
-                # rwd = <r1...r2>
-                exp = rwds + CFG.gamma * self.net(torch.FloatTensor(np.ndarray(obs_new_s))).max()
+        # We compute the target
+        with torch.no_grad():
+            exp = rwd + CFG.gamma * self.net(new).max() # TODO squeeze and get index
+        print("self.net : exp --> ", exp)
 
-            # Compute the loss
-            loss = torch.square(exp - out)
-            self.loss_list.append(loss.tolist())
+        # Compute the loss
+        loss = torch.square(exp - out)
+        print('loss', loss, "\n")
+        self.loss_list.append(loss.tolist())
 
-            # Perform a backward propagation.
-            # exit() before backward prop to check
-            self.opt.zero_grad()
-            loss.sum().backward()
-            self.opt.step()
+        # Perform a backward propagation.
+        self.opt.zero_grad()
+        loss.sum().backward()
+        self.opt.step()
 
-            # stats_rwd(rwd):
-        """
+        # stats_rwd(rwd): TODO later
+
 
 
     def move(self, new_obs, board):
@@ -204,11 +93,12 @@ class DeepKasp_Conv_Batch(Agent):
         # Return random action with probability epsilon
         if random.uniform(0, 1) < CFG.epsilon or\
             len(self.obs) <= CFG.batch_size:
-           return random.choice(np.flatnonzero(new_obs["action_mask"]))
+            if CFG.debug:
+                print("Deep_K Epsilon-induced Random Move !")
+            return random.choice(np.flatnonzero(new_obs["action_mask"]))
 
-        # Else, return action with highest value
+        # Else, return action with highest value # TODO FIX
         with torch.no_grad():
-            # to clean up & squeeze ?..
             val = self.net(torch.tensor(new_obs['observation']).type(torch.FloatTensor))
             valid_actions = torch.tensor(np.squeeze(np.argwhere(new_obs['action_mask'] == 1).T, axis=0))
             valid_q = torch.index_select(val, 0, valid_actions)
@@ -234,7 +124,6 @@ class StockFish(Agent):
         super().__init__()
         if CFG.engine == None:
             CFG.engine = Engine()
-        self.time_to_play = CFG.time_to_play
 
     @staticmethod
     def move_to_act(move):
@@ -249,7 +138,7 @@ class StockFish(Agent):
         if board.turn == False:
             board = board.mirror()
         SF_move = CFG.engine.engine.play(board=board,
-                                   limit=chess.engine.Limit(time=self.time_to_play),
+                                   limit=chess.engine.Limit(time=CFG.time_to_play), # set Depth to 1 at beginning TODO
                                    info=chess.engine.Info(1)
                                    )
         if CFG.debug:

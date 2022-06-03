@@ -4,7 +4,7 @@ torch
 numpy
 pettingzoo==1.18.1
 pettingzoo[classic]
-
+ipdb
 # pettingzoo==1.10.0
 ## Version to use chessV3 and get 8x8x20 obsv shape
 

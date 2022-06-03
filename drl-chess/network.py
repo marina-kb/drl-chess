@@ -29,18 +29,16 @@ class Conv(nn.Module):
 
     def forward(self, x):
         y = self.net(x)
-        # TODO add a flatten to y but keep first dimension intact
-        print(y.shape)
-        exit()
+        y = torch.flatten(y, start_dim=1, end_dim=-1)
         return self.linear(y)
 
 
-class Lin(nn.Module):
+class Linear(nn.Module): # TODO FIX
     """
     A simple Deep Q-Network with 3 linear layers.
     """
     def __init__(self):
-        super(Lin, self).__init__()
+        super(Linear, self).__init__()
 
         self.net = nn.Sequential(
             nn.Flatten(1, 1),
