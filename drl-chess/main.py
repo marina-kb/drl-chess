@@ -1,26 +1,29 @@
-from time import time
+import math
 import game
 import agent
 from config import CFG
 from data import DAT
-import math
 from utils import to_disk
 
 
-def quit():
+def stop_eng():
     if CFG.engine is not None:
         CFG.engine.stop_engine()
 
+
 def main():
 
-    CFG.init(net_type="conv", reward_SF=True)
+    CFG.init(net_type="conv", reward_SF=True, debug=False)
 
-    agt = (agent.DeepK(), agent.Random())
+    agt = (agent.DeepK(), agent.StockFish())
     env = game.Game(agt)
 
     for n in range(1):
         # CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         env.play()
+
+    stop_eng()
+
 
 def gen_data():
 
@@ -30,7 +33,7 @@ def gen_data():
     env = game.Game(agt)
     obs = []
 
-    for _ in range(100):
+    for _ in range(25):
         env.play()
 
         obs += agt[0].obs
@@ -38,16 +41,15 @@ def gen_data():
 
         agt[0].obs.clear()
         agt[1].obs.clear()
-        # print('game done')
 
-    # PUSH TO DATA/
-    to_disk(obs)
-    # print('saving')
+    to_disk(obs) # Push obs batch to ../data/
 
 
-# for _ in range(1):
+# while True:
 #     gen_data()
 
-
-while True:
+for _ in range(10):
     gen_data()
+    stop_eng()
+
+# main()

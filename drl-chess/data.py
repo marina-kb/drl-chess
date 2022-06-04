@@ -1,3 +1,8 @@
+"""
+Data generator module.
+"""
+
+
 class Data:
     def __init__(self):
         """
@@ -30,7 +35,8 @@ class Data:
         """
         Save the current game outcome.
         """
-        self.game.append(board.outcome(claim_draw=True).result())
+        self.game.append(board.outcome(claim_draw=True).result())  # TODO DEBUG PAUL BROKEN?
+
 
     def set_score(self, score, idx):
         self.score[idx].append(score)

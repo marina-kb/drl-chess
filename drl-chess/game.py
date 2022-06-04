@@ -4,7 +4,7 @@ Game Module.
 
 from pettingzoo.classic import chess_v5
 
-from data import DAT
+from data import DAT, Data
 from config import CFG
 
 
@@ -31,6 +31,10 @@ class Game:
                 if CFG.reward_SF:
                     rwd = CFG.engine.reward(self.board(), idx)
                 agt.feed(old, act, rwd, new)
+
+            # if self.board().is_game_over():  ## TODO TEST DEBUG PAUL
+            #     print(self.chess_env.board.outcome())
+            #     Data().set_game(board=self.board())
 
             if done:
                 DAT.set_game(self.board())
