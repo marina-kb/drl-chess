@@ -45,11 +45,11 @@ def gen_data():
     to_disk(obs) # Push obs batch to ../data/
 
 
-# while True:
-#     gen_data()
-
-for _ in range(10):
+while True:
     gen_data()
+
+# for _ in range(10):
+#     gen_data()
 stop_eng()
 
 # main()
