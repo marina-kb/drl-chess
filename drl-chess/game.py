@@ -37,7 +37,7 @@ class Game:
             #     Data().set_game(board=self.board())
 
             if done:
-                # DAT.set_game(self.board())
+                DAT.set_game(self.board())
                 break
 
             act = agt.move(new, self.board())
