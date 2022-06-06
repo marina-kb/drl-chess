@@ -18,7 +18,7 @@ def main():
     agt = (agent.DeepK(), agent.StockFish())
     env = game.Game(agt)
 
-    for n in range(1):
+    for n in range(2):
         # CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         env.play()
 
@@ -50,6 +50,6 @@ def gen_data():
 
 for _ in range(10):
     gen_data()
-    stop_eng()
+stop_eng()
 
 # main()

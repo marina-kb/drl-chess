@@ -71,7 +71,8 @@ class DeepK(Agent):
 
         # Compute the loss
         loss = torch.square(exp - out)
-        print("loss", loss, "\n")
+        if CFG.debug:
+            print("loss", loss, "\n")
         DAT.set_loss(loss.tolist())
 
         # Perform a backward propagation.
