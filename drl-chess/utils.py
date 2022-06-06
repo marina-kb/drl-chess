@@ -26,4 +26,4 @@ def load_from_file(file):
         x = pickle.load(f)
     print(x)
 
-load_from_file('2022-06-04_10/32/19-pretraining.pkl')
+# load_from_file('2022-06-04_10/32/19-pretraining.pkl')
