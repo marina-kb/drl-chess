@@ -142,12 +142,12 @@ class StockFish(Agent):
         panel = chess_utils.get_move_plane(move)
         return (x * 8 + y) * 73 + panel
 
-    def _move(self, board): # TODO, Maybe. Move this to the engine class to encapsulate stockfish.
+    def _move(self, board):   # TODO, Maybe. Move this to the engine class to encapsulate stockfish.
         if board.turn == False:
             board = board.mirror()
 
         move = CFG.engine.engine.play(board=board, limit=chess.engine.Limit(
-            time=CFG.time_to_play, depth=CFG.depth))
+            time=CFG.time_to_play, depth=CFG.depth))   # TODO Test Different Settings / Depths
 
         return self.move_to_act(move.move)
 

@@ -78,21 +78,27 @@ def load_agent():
 
 main()
 
-fig = plt.figure(figsize=(15, 10))
+
+fig = plt.figure(figsize=(15, 10))  # TODO Move to utils
+
+# Loss subplot
 plt.subplot(2,2,1)
 plt.plot(DAT.stats['loss'], label='mean loss')
 plt.title('mean loss')
 plt.legend()
-# Second subplot
+
+# Reward player 0 subplot
 plt.subplot(2,2,3)
 plt.plot(DAT.stats['reward_1'], label='mean_rwd_DeepK', c='black')
 # plt.ylim(-1,1)
 plt.title("cumulative reward DeepK")
-# Second subplot
+
+# Reward player 1 subplot
 plt.subplot(2,2,4)
 plt.plot(DAT.stats['reward_2'], label='mean_rwd_SF', c='black')
 # plt.ylim(-1,1)
 plt.title("cumulative reward SF")
+
 # Global figure methods
 plt.suptitle('loss&rwd')
 plt.show()
