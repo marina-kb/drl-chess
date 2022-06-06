@@ -73,7 +73,7 @@ class DeepK(Agent):
         # We compute the target
         with torch.no_grad():
             idx = torch.argmax(self.net(new), 1).unsqueeze(1)
-            exp = rwd + CFG.gamma * torch.gather(self.net(new), 1, idx).squeeze(1)
+            exp = rwd + CFG.gamma * torch.gather(self.tgt(new), 1, idx).squeeze(1)
 
         # Compute the loss
         loss = torch.square(exp - out)
@@ -91,6 +91,13 @@ class DeepK(Agent):
             self.tgt.load_state_dict(self.net.state_dict())
 
         # stats_rwd(rwd): TODO later
+
+        # TODO code an evaluation method to stop the learning every n batch and
+        # do a couple games vs. Stockfish to evaluate the model's progress
+
+        # TODO Calcul de l'évolution de la loss moyenne sur une partie
+        # -> elle devrait reduire avec le temps
+
 
     def move(self, new_obs, board):
         """
