@@ -19,28 +19,10 @@ def to_disk(obs):
     print(f"Save to pickle @ {pdt}")
 
 
-def load_from_file(file):
-
-    dir = os.path.join(os.path.dirname(__file__), f'../data/*.pkl')   # *_databatch.pkl
-
-    with open(dir, 'rb') as f:
-        x = pickle.load(f)
-
-    print(x)
+def from_disk(file):
+    with open(file, 'rb') as f:
+        return pickle.load(f)
 
 
-def load_multiple():
-
-    dir = os.path.join(os.path.dirname(__file__), f'../data-test')
-    file_list = glob.glob(dir + '/*.pkl')
-
-    full_pkl = []
-
-    for file_path in file_list:
-        with open(file_path, 'rb') as f:
-            full_pkl += [obs for obs in pickle.load(f)]
-    print(len(full_pkl), len(full_pkl[0]))
-    old, act, rwd, new = zip(*full_pkl)
-    print(rwd)
-
-# load_multiple()
+def get_files(dir):
+    return glob.glob(dir + '/*.pkl')

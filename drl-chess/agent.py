@@ -14,6 +14,7 @@ from data import DAT
 from config import CFG
 from engine import Engine
 from network import Conv, Linear
+from utils import load_multiple
 
 
 class Agent:
@@ -116,6 +117,18 @@ class DeepK(Agent):
             best_q = torch.argmax(valid_q).numpy()
             action = valid_actions[best_q].numpy()
         return action.tolist()
+
+
+class TrainData(DeepK):
+    def __init__(self):
+        super().__init__()
+        self.obs = load_multiple()
+
+    def feed(self, obs_old, act, rwd, obs_new):
+        pass
+
+    def move(self, new_obs, board):
+        pass
 
 
 class Random(Agent):

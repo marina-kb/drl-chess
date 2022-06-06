@@ -1,9 +1,11 @@
 import math
+import os
+
 import game
 import agent
 from config import CFG
 from data import DAT
-from utils import to_disk
+import utils
 
 
 def stop_eng():
@@ -11,11 +13,12 @@ def stop_eng():
         CFG.engine.stop_engine()
 
 
-def main():
+def main(agt=None):
 
     CFG.init(net_type="conv", reward_SF=True, debug=True)
 
-    agt = (agent.DeepK(), agent.Random())
+    if agt is None:
+        agt = (agent.DeepK(), agent.Random())
     env = game.Game(agt)
 
     for n in range(1):
@@ -42,14 +45,34 @@ def gen_data():
         agt[0].obs.clear()
         agt[1].obs.clear()
 
-    to_disk(obs) # Push obs batch to ../data/
+    utils.to_disk(obs) # Push obs batch to ../data/
 
 
-# while True:
-#     gen_data()
+def load_agent():
+
+    CFG.init(net_type="conv", debug=False, reward_SF=True)
+
+    agt = agent.DeepK()
+    dir = os.path.join(os.path.dirname(__file__), f'../data-test')
+
+    for dir in utils.get_files(dir):
+        print(dir)
+        for obs in utils.from_disk(dir):
+            agt.obs.append(obs)
+            if len(agt.obs) == 32:
+                print("train")
+                agt.learn()
+                agt.obs = []
+    return agt
+
+
+while True:
+    gen_data()
 
 # for _ in range(10):
 #     gen_data()
 # stop_eng()
 
-main()
+# main()
+
+# load_agent()
