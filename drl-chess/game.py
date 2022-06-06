@@ -3,6 +3,7 @@ Game Module.
 """
 
 from pettingzoo.classic import chess_v5
+import matplotlib.pyplot as plt
 
 from data import DAT, Data
 from config import CFG
@@ -28,16 +29,12 @@ class Game:
 
             if dat is not None:
                 old, act = dat
-                if CFG.reward_SF:
-                    rwd = CFG.engine.reward(self.board(), idx)
+                rwd = DAT.get_reward(self.board(), idx) if CFG.reward_SF else rwd
                 agt.feed(old, act, rwd, new)
 
-            # if self.board().is_game_over():  ## TODO TEST DEBUG PAUL
-            #     print(self.chess_env.board.outcome())
-            #     Data().set_game(board=self.board())
-
             if done:
-                DAT.set_game(self.board()) # TODO UNCOMMENT AFTER TEST
+                DAT.set_game(self.board())
+                DAT.reset()
                 break
 
             act = agt.move(new, self.board())

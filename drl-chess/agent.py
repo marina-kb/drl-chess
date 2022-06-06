@@ -57,7 +57,7 @@ class DeepK(Agent):
 
     def learn(self):
 
-        CFG.play_idx += 1
+        DAT.learn_idx += 1
 
         batch = random.sample(self.obs, CFG.batch_size)
         old, act, rwd, new = zip(*batch)
@@ -79,24 +79,19 @@ class DeepK(Agent):
         loss = torch.square(exp - out)
         if CFG.debug:
             print("loss", loss, "\n")
-        DAT.set_loss(loss.tolist())
+        DAT.set_loss(np.mean(loss.tolist()))   # MEAN LOSS OF BATCH (size 10)
 
         # Perform a backward propagation.
         self.opt.zero_grad()
         loss.sum().backward()
         self.opt.step()
 
-         # Target Network: by Viannou_lb
-        if CFG.play_idx % CFG.weight_updt == 0:
+        # Target Network: by Viannou_lb
+        if DAT.learn_idx % CFG.weight_updt == 0:
             self.tgt.load_state_dict(self.net.state_dict())
-
-        # stats_rwd(rwd): TODO later
 
         # TODO code an evaluation method to stop the learning every n batch and
         # do a couple games vs. Stockfish to evaluate the model's progress
-
-        # TODO Calcul de l'évolution de la loss moyenne sur une partie
-        # -> elle devrait reduire avec le temps
 
 
     def move(self, new_obs, board):
@@ -147,14 +142,17 @@ class StockFish(Agent):
         panel = chess_utils.get_move_plane(move)
         return (x * 8 + y) * 73 + panel
 
-    def _move(self, obs, board):
+    def _move(self, board): # TODO, Maybe. Move this to the engine class to encapsulate stockfish.
         if board.turn == False:
             board = board.mirror()
-        move = CFG.engine.engine.play(board=board, limit=CFG.engine.limit)
+
+        move = CFG.engine.engine.play(board=board, limit=chess.engine.Limit(
+            time=CFG.time_to_play, depth=CFG.depth))
+
         return self.move_to_act(move.move)
 
-    def move(self, observation, board):
-        move = self._move(observation, board)
+    def move(self, _, board):
+        move = self._move(board)
         return move
 
 
@@ -162,8 +160,8 @@ class ObservationGenerator(StockFish, DeepK):
     def __init__(self):
         super().__init__()
 
-    def move(self, new_obs, board):
-        return super()._move(new_obs, board)
+    def move(self, _, board):
+        return super()._move(board)
 
     def learn(self):
         return

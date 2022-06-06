@@ -21,21 +21,21 @@ class Configuration:
         self.alpha = 0.2
         self.gamma = 0.98
         self.epsilon = None
-        self.epsilon_decay = 0.001
+        self.epsilon_decay = 0.01
         self.rnd_seed = None
         self.net_type = None
 
         self.reward_SF = True
         self.engine = None
         self.time_to_play = 0.1
+        self.depth = 5
         self.buffer_size = 10000
 
         self.debug = False
 
         self.batch_size = 10
 
-        self.weight_updt = 100
-        self.play_idx = 0
+        self.weight_updt = 50
 
     def init(self, net_type, **kwargs):
         """
@@ -54,6 +54,8 @@ class Configuration:
 
         # Once all values are properly set, use them.
         random.seed(self.rnd_seed)
+
+        # import engine
 
         # Adding Stockfish engine:
         if self.reward_SF:
