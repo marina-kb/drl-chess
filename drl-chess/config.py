@@ -34,6 +34,9 @@ class Configuration:
 
         self.batch_size = 10
 
+        self.weight_updt = 100
+        self.play_idx = 0
+
     def init(self, net_type, **kwargs):
         """
         User-defined configuration init. Mandatory to properly set all configuration parameters.

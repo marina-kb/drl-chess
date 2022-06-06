@@ -37,10 +37,12 @@ class Game:
             #     Data().set_game(board=self.board())
 
             if done:
-                DAT.set_game(self.board())
+                # DAT.set_game(self.board()) # TODO UNCOMMENT AFTER TEST
                 break
 
             act = agt.move(new, self.board())
+            if CFG.debug:
+                print(f'Move : {act}')
             self.game_env.step(act)
 
             DAT.set_data((new, act), idx)

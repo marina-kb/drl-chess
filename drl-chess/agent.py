@@ -34,6 +34,11 @@ class DeepK(Agent):
         agt_t = {"conv": Conv, "linear": Linear}
 
         self.net = agt_t[CFG.net_type]()
+
+        self.tgt = agt_t[CFG.net_type]()
+        self.tgt.load_state_dict(self.net.state_dict())
+        self.tgt.eval()
+
         self.obs = collections.deque(maxlen=CFG.buffer_size)
         self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
 
@@ -42,16 +47,18 @@ class DeepK(Agent):
         Learn from a single observation sample.
         """
 
-        old = torch.tensor(obs_old["observation"])
+        old = torch.tensor(obs_old["observation"]).T
         act = torch.tensor(act)
         rwd = torch.tensor(rwd)
-        new = torch.tensor(obs_new["observation"])
+        new = torch.tensor(obs_new["observation"]).T
 
         self.obs.append((old, act, rwd, new))
         if len(self.obs) >= CFG.batch_size:
             self.learn()
 
     def learn(self):
+
+        CFG.play_idx += 1
 
         batch = random.sample(self.obs, CFG.batch_size)
         old, act, rwd, new = zip(*batch)
@@ -80,6 +87,10 @@ class DeepK(Agent):
         loss.sum().backward()
         self.opt.step()
 
+         # Target Network: by Viannou_lb
+        if CFG.play_idx % CFG.weight_updt == 0:
+            self.tgt.load_state_dict(self.net.state_dict())
+
         # stats_rwd(rwd): TODO later
 
     def move(self, new_obs, board):
@@ -96,7 +107,7 @@ class DeepK(Agent):
         # Else, return action with highest value
 
         with torch.no_grad():
-            new = torch.tensor(new_obs["observation"]).type(torch.FloatTensor).unsqueeze(0)
+            new = torch.tensor(new_obs["observation"]).T.type(torch.FloatTensor).unsqueeze(0)
             val = self.net(new).squeeze(0)
             valid_actions = torch.tensor(
                 np.squeeze(np.argwhere(new_obs["action_mask"] == 1).T, axis=0)

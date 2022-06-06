@@ -43,4 +43,4 @@ def load_multiple():
     old, act, rwd, new = zip(*full_pkl)
     print(rwd)
 
-load_multiple()
+# load_multiple()

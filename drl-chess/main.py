@@ -13,12 +13,12 @@ def stop_eng():
 
 def main():
 
-    CFG.init(net_type="conv", reward_SF=True, debug=False)
+    CFG.init(net_type="conv", reward_SF=True, debug=True)
 
-    agt = (agent.DeepK(), agent.StockFish())
+    agt = (agent.DeepK(), agent.Random())
     env = game.Game(agt)
 
-    for n in range(2):
+    for n in range(1):
         # CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         env.play()
 
@@ -45,11 +45,11 @@ def gen_data():
     to_disk(obs) # Push obs batch to ../data/
 
 
-while True:
-    gen_data()
+# while True:
+#     gen_data()
 
 # for _ in range(10):
 #     gen_data()
-stop_eng()
+# stop_eng()
 
-# main()
+main()
