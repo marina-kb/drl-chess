@@ -4,6 +4,7 @@ Engine class to use Stockfish
 
 import subprocess
 import chess.engine
+import os
 
 class Engine:
     def __init__(self):
@@ -11,6 +12,7 @@ class Engine:
             subprocess.run(["which", "stockfish"], stdout=subprocess.PIPE)
             .stdout.decode("utf-8").strip("\n")
             )
+        # SF_dir = os.path.join(os.path.dirname(__file__), '../.direnv/stockfish')
         self.engine = chess.engine.SimpleEngine.popen_uci(SF_dir)
 
         # print(self.engine.options)

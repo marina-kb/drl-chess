@@ -55,7 +55,7 @@ def gen_data():
 
 def load_agent():
 
-    CFG.init(net_type="conv", debug=False, reward_SF=True, depth=1, small_obs=False)
+    CFG.init(net_type="conv", debug=False, reward_SF=False, depth=1, small_obs=True) # Check reward SF dependencies
 
     agt = agent.DeepK()
     dir = os.path.join(os.path.dirname(__file__), f'../data')
@@ -66,6 +66,7 @@ def load_agent():
             if len(agt.obs) >= CFG.batch_size:
                 agt.learn()
                 if DAT.learn_idx % 50 == 0:
+                    print(f"Training loss = {DAT.stats['loss'][-1]}")
                     eval(agt)
                 agt.obs = []
 
@@ -82,7 +83,9 @@ def eval(agt, n_eval=5):
     winner = DAT.stats['outcome'][-n_eval:]
     wins = winner.count('1-0')
     draw = winner.count('1/2-1/2')
-    print(f'{agt} a gagné {wins}/{n_eval} et a fait {draw} nuls')
+    print(f'Wins {wins}, Losses = {5 - wins - draw}, Draws {draw} \n')
+    if wins + draw < n_eval:
+        print("KASPAROV")
     agt.net.train()
     CFG.train=True
 
