@@ -7,7 +7,7 @@ from datetime import datetime
 import os
 import glob
 import matplotlib.pyplot as plt
-
+import torch
 
 def to_disk(obs):
 
@@ -56,3 +56,13 @@ def plot_stats(DAT, figsize=(15,10)):
     plt.show()
 
 #Viannou va écrire une super fonction ci-dessous
+def w8_loader(model,file_name):
+    device = torch.device('cpu')
+    dir = os.path.join(os.path.dirname(__file__), f'../weights/{file_name}')
+    model.load_state_dict(torch.load(dir, map_location=device))
+    return model
+
+def w8_saver(model,file_name):
+    dir = os.path.join(os.path.dirname(__file__), f'../weights/{file_name}')
+    torch.save(model.state_dict(), dir)
+    return
