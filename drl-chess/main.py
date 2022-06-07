@@ -17,13 +17,13 @@ def stop_eng():
 
 def main(agt=None):
 
-    CFG.init(net_type="conv", reward_SF=True, debug=False)
+    CFG.init(net_type="conv", reward_SF=True, debug=False, small_obs=False)
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())
     env = game.Game(agt)
 
-    for n in range(100):
+    for n in range(5):
         CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         print(f"Playing game {n}")
         env.play()
@@ -55,22 +55,40 @@ def gen_data():
 
 def load_agent():
 
-    CFG.init(net_type="conv", debug=False, reward_SF=True)
+    CFG.init(net_type="conv", debug=False, reward_SF=True, depth=1)
 
     agt = agent.DeepK()
-    dir = os.path.join(os.path.dirname(__file__), f'../data')
-
-    print(f" files to load: {len(utils.get_files(dir))}")
-
+    dir = os.path.join(os.path.dirname(__file__), f'../data/data')
     for dir in utils.get_files(dir):
         print(dir)
         for obs in utils.from_disk(dir):
             agt.obs.append(obs)
-            if len(agt.obs) % 32 == 0:
+            print(len(agt.obs))
+            if len(agt.obs) == CFG.batch_size:
+                print("train")
                 agt.learn()
                 agt.obs = []
-        print(f"loss : {sum(DAT.stats['loss']) / len(DAT.stats['loss'])}")
+                if DAT.learn_idx % 10 == 0:
+                    eval(agt)
+
     return agt
+
+
+def eval(agt, n_eval=10):
+    eps, CFG.epsilon = CFG.epsilon, 0
+    agt.net.eval()
+    env = game.Game((agt, agent.StockFish()))
+    for _ in range(n_eval):
+        env.play()
+    winner = DAT.stats['outcomes'][:-n_eval]
+    wins = winner.count('1-0')
+    draw = winner.count('1/2-1/2')
+    print(f'{agt[0]} a gagné {wins}/{n_eval} et a fait {draw} nuls')
+    agt.net.train()
+    CFG.epsilon = eps
+    return agt
+
+
 
 
 # while True:
@@ -84,7 +102,7 @@ load_agent()
 
 # main()
 
-# stats = True
+stats = False
 
 if stats:
     fig = plt.figure(figsize=(15, 10))  # TODO Move to utils

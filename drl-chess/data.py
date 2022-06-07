@@ -55,8 +55,9 @@ class Data:
 
         try :
             self.stats['outcome'].append(board.outcome(claim_draw=True).result())  # TODO DEBUG PAUL BROKEN?
+            print("yes")
         except:
-            pass
+            print("still no")
 
         self.reset()
 

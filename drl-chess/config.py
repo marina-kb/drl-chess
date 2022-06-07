@@ -36,7 +36,8 @@ class Configuration:
 
         self.debug = False
 
-        ## TODO ADD OLD STATE SLICE
+        self.small_obs = False
+
 
     def init(self, net_type, **kwargs):
         """

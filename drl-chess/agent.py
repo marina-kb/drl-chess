@@ -67,6 +67,10 @@ class DeepK(Agent):
         rwd = torch.stack(rwd).type(torch.FloatTensor)
         new = torch.stack(new).type(torch.FloatTensor)
 
+        if CFG.small_obs:
+            old = old[:, 0:20, :, :]
+            new = new[:, 0:20, :, :]
+
         # We get the network output
         out = torch.gather(self.net(old), 1, act).squeeze(1)
 
