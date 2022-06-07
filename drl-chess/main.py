@@ -66,7 +66,7 @@ def load_agent():
             if len(agt.obs) >= CFG.batch_size:
                 agt.learn()
                 if DAT.learn_idx % 50 == 0:
-                    print(f"Training loss = {DAT.stats['loss'][-1]}")
+                    print(f"Training loss: {DAT.stats['loss'][-1]}")
                     eval(agt)
                 agt.obs = []
 
@@ -77,15 +77,16 @@ def eval(agt, n_eval=5):
     CFG.train = False
     agt.net.eval()
     env = game.Game((agt, agent.StockFish()))
+
     for _ in range(n_eval):
         env.play()
-        print('playing')
     winner = DAT.stats['outcome'][-n_eval:]
     wins = winner.count('1-0')
     draw = winner.count('1/2-1/2')
-    print(f'Wins {wins}, Losses = {5 - wins - draw}, Draws {draw} \n')
-    if wins + draw < n_eval:
+    print(f'Wins {wins}, Losses {5 - wins - draw}, Draws {draw} \n')
+    if wins > n_eval/2:
         print("KASPAROV")
+
     agt.net.train()
     CFG.train=True
 
@@ -99,33 +100,8 @@ def eval(agt, n_eval=5):
 #     gen_data()
 # stop_eng()
 
-load_agent()
+# load_agent()
 
-# main()
+main()
 
-stats = False
-
-if stats:
-    fig = plt.figure(figsize=(15, 10))  # TODO Move to utils
-
-    # Loss subplot
-    plt.subplot(2,2,1)
-    plt.plot(DAT.stats['loss'], label='mean loss')
-    plt.title('mean loss')
-    plt.legend()
-
-    # Reward player 0 subplot
-    plt.subplot(2,2,3)
-    plt.plot(DAT.stats['reward_1'], label='mean_rwd_DeepK', c='black')
-    # plt.ylim(-1,1)
-    plt.title("mean reward DeepK")
-
-    # Reward player 1 subplot
-    plt.subplot(2,2,4)
-    plt.plot(DAT.stats['reward_2'], label='mean_rwd_SF', c='black')
-    # plt.ylim(-1,1)
-    plt.title("mean reward SF")
-
-    # Global figure methods
-    plt.suptitle('loss&rwd')
-    plt.show()
+utils.plot_stats(DAT)
