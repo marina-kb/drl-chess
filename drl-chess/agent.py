@@ -68,7 +68,6 @@ class DeepK(Agent):
         new = torch.stack(new).type(torch.FloatTensor)
 
         # We get the network output
-        # print(old.shape, act.shape, self.net(old).shape)
         out = torch.gather(self.net(old), 1, act).squeeze(1)
 
         # We compute the target
@@ -80,11 +79,14 @@ class DeepK(Agent):
         loss = torch.square(exp - out)
         if CFG.debug:
             print("loss", loss, "\n")
-        DAT.set_loss(np.mean(loss.tolist()))   # MEAN LOSS OF BATCH (size 10)
+        DAT.set_loss(np.mean(loss.tolist()))   # Adds mean loss of batch
 
         # Perform a backward propagation.
         self.opt.zero_grad()
         loss.sum().backward()
+        torch.nn.utils.clip_grad_norm_(self.net.parameters(),   # Input Gradient Clipping
+                                       max_norm=1.0, )
+                                       #norm_type=2)
         self.opt.step()
 
         # Target Network: by Viannou_lb

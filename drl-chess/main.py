@@ -17,13 +17,13 @@ def stop_eng():
 
 def main(agt=None):
 
-    CFG.init(net_type="linear", reward_SF=True, debug=False)
+    CFG.init(net_type="conv", reward_SF=True, debug=False)
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())
     env = game.Game(agt)
 
-    for n in range(50):
+    for n in range(100):
         CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         print(f"Playing game {n}")
         env.play()
@@ -82,7 +82,9 @@ def load_agent():
 
 load_agent()
 
-stats = False
+# main()
+
+# stats = True
 
 if stats:
     fig = plt.figure(figsize=(15, 10))  # TODO Move to utils
@@ -97,13 +99,13 @@ if stats:
     plt.subplot(2,2,3)
     plt.plot(DAT.stats['reward_1'], label='mean_rwd_DeepK', c='black')
     # plt.ylim(-1,1)
-    plt.title("cumulative reward DeepK")
+    plt.title("mean reward DeepK")
 
     # Reward player 1 subplot
     plt.subplot(2,2,4)
     plt.plot(DAT.stats['reward_2'], label='mean_rwd_SF', c='black')
     # plt.ylim(-1,1)
-    plt.title("cumulative reward SF")
+    plt.title("mean reward SF")
 
     # Global figure methods
     plt.suptitle('loss&rwd')

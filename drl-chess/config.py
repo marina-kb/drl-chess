@@ -36,6 +36,8 @@ class Configuration:
 
         self.debug = False
 
+        ## TODO ADD OLD STATE SLICE
+
     def init(self, net_type, **kwargs):
         """
         User-defined configuration init. Mandatory to properly set all configuration parameters.

@@ -52,9 +52,11 @@ class Linear(nn.Module):
             nn.Flatten(1, -1),
             nn.Linear(7104, 264),    # arg1 = 111 * 8 * 8 parameters
             # nn.ReLU(inplace=True),
+            # nn.BatchNorm1d(264),
             nn.Linear(264, 264),
-            nn.Dropout(p=0.2),
+            # nn.BatchNorm1d(264),
             nn.Linear(264, 128),
+            # nn.BatchNorm1d(128),
             nn.Linear(128, 4672),
             nn.ReLU(inplace=True),
         )
