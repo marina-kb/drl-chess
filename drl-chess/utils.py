@@ -54,3 +54,5 @@ def plot_stats(DAT, figsize=(15,10)):
     # Global figure methods
     plt.suptitle('loss&rwd')
     plt.show()
+
+#Viannou va écrire une super fonction ci-dessous
