@@ -40,7 +40,7 @@ class Conv(nn.Module):
         return self.linear(y)
 
 
-class Linear(nn.Module):  # TODO FIX
+class Linear(nn.Module):
     """
     A simple Deep Q-Network with 3 linear layers.
     """
@@ -49,13 +49,13 @@ class Linear(nn.Module):  # TODO FIX
         super(Linear, self).__init__()
 
         self.net = nn.Sequential(
-            nn.Flatten(1, 1),
-            nn.Linear(111, 20),
-            nn.ReLU(inplace=True),
-            nn.Linear(20, 20),
-            nn.ReLU(inplace=True),
-            nn.Flatten(),
-            nn.Linear(1280, 4672),
+            nn.Flatten(1, -1),
+            nn.Linear(7104, 264),    # arg1 = 111 * 8 * 8 parameters
+            # nn.ReLU(inplace=True),
+            nn.Linear(264, 264),
+            nn.Dropout(p=0.2),
+            nn.Linear(264, 128),
+            nn.Linear(128, 4672),
             nn.ReLU(inplace=True),
         )
 

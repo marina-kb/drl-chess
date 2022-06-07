@@ -29,13 +29,12 @@ class Configuration:
         self.engine = None
         self.time_to_play = 0.1
         self.depth = 5
+
         self.buffer_size = 10000
+        self.batch_size = 10
+        self.weight_updt = 50
 
         self.debug = False
-
-        self.batch_size = 10
-
-        self.weight_updt = 50
 
     def init(self, net_type, **kwargs):
         """

@@ -68,6 +68,7 @@ class DeepK(Agent):
         new = torch.stack(new).type(torch.FloatTensor)
 
         # We get the network output
+        # print(old.shape, act.shape, self.net(old).shape)
         out = torch.gather(self.net(old), 1, act).squeeze(1)
 
         # We compute the target

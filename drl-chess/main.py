@@ -17,16 +17,18 @@ def stop_eng():
 
 def main(agt=None):
 
-    CFG.init(net_type="conv", reward_SF=True, debug=False)
+    CFG.init(net_type="linear", reward_SF=True, debug=False)
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())
     env = game.Game(agt)
 
-    for n in range(200):
+    for n in range(50):
         CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         print(f"Playing game {n}")
         env.play()
+        # print(f"outcome : {DAT.stats['outcome'][-1]}")
+        print(f"loss : {DAT.stats['loss'][-1]} \n")
 
     stop_eng()
 
@@ -56,7 +58,7 @@ def load_agent():
     CFG.init(net_type="conv", debug=False, reward_SF=True)
 
     agt = agent.DeepK()
-    dir = os.path.join(os.path.dirname(__file__), f'../data-test')
+    dir = os.path.join(os.path.dirname(__file__), f'../data')
 
     for dir in utils.get_files(dir):
         print(dir)
@@ -76,29 +78,31 @@ def load_agent():
 #     gen_data()
 # stop_eng()
 
-main()
+load_agent()
 
+stats = False
 
-fig = plt.figure(figsize=(15, 10))  # TODO Move to utils
+if stats:
+    fig = plt.figure(figsize=(15, 10))  # TODO Move to utils
 
-# Loss subplot
-plt.subplot(2,2,1)
-plt.plot(DAT.stats['loss'], label='mean loss')
-plt.title('mean loss')
-plt.legend()
+    # Loss subplot
+    plt.subplot(2,2,1)
+    plt.plot(DAT.stats['loss'], label='mean loss')
+    plt.title('mean loss')
+    plt.legend()
 
-# Reward player 0 subplot
-plt.subplot(2,2,3)
-plt.plot(DAT.stats['reward_1'], label='mean_rwd_DeepK', c='black')
-# plt.ylim(-1,1)
-plt.title("cumulative reward DeepK")
+    # Reward player 0 subplot
+    plt.subplot(2,2,3)
+    plt.plot(DAT.stats['reward_1'], label='mean_rwd_DeepK', c='black')
+    # plt.ylim(-1,1)
+    plt.title("cumulative reward DeepK")
 
-# Reward player 1 subplot
-plt.subplot(2,2,4)
-plt.plot(DAT.stats['reward_2'], label='mean_rwd_SF', c='black')
-# plt.ylim(-1,1)
-plt.title("cumulative reward SF")
+    # Reward player 1 subplot
+    plt.subplot(2,2,4)
+    plt.plot(DAT.stats['reward_2'], label='mean_rwd_SF', c='black')
+    # plt.ylim(-1,1)
+    plt.title("cumulative reward SF")
 
-# Global figure methods
-plt.suptitle('loss&rwd')
-plt.show()
+    # Global figure methods
+    plt.suptitle('loss&rwd')
+    plt.show()
