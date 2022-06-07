@@ -58,15 +58,16 @@ def load_agent():
     CFG.init(net_type="conv", debug=False, reward_SF=True)
 
     agt = agent.DeepK()
-    dir = os.path.join(os.path.dirname(__file__), f'../data')
+    dir = os.path.join(os.path.dirname(__file__), f'../data-test')
 
     for dir in utils.get_files(dir):
         print(dir)
         for obs in utils.from_disk(dir):
             agt.obs.append(obs)
-            if len(agt.obs) == CFG.batch_size:
+            if len(agt.obs) % CFG.batch_size == 0:
                 print("train")
                 agt.learn()
+                print(f"loss : {DAT.stats['loss'][-1]} \n")
                 agt.obs = []
     return agt
 
