@@ -53,7 +53,7 @@ class Data:
         rwd_2 = np.diff(list(map(self.linearize_reward, self.score[1])))
         self.stats['reward_2'].append(sum(rwd_2) / len(self.score[1]))
 
-        self.stats['outcome'].append(board.outcome(claim_draw=True).result())  # TODO DEBUG PAUL BROKEN?
+        self.stats['outcome'].append(board.outcome(claim_draw=True).result())
 
         self.reset()
 

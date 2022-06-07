@@ -38,6 +38,8 @@ class Configuration:
 
         self.small_obs = False
 
+        self.train = True
+
 
     def init(self, net_type, **kwargs):
         """

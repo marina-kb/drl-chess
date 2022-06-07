@@ -52,7 +52,7 @@ class DeepK(Agent):
         new = torch.tensor(obs_new["observation"]).T
 
         self.obs.append((old, act, rwd, new))
-        if len(self.obs) >= CFG.batch_size:
+        if len(self.obs) >= CFG.batch_size and CFG.train:
             self.learn()
 
     def learn(self):
@@ -107,7 +107,7 @@ class DeepK(Agent):
         """
 
         # Return random action with probability epsilon
-        if random.uniform(0, 1) < CFG.epsilon or len(self.obs) <= CFG.batch_size:
+        if random.uniform(0, 1) < CFG.epsilon and CFG.train:
             if CFG.debug:
                 print("Deep_K Epsilon-induced Random Move !")
             return random.choice(np.flatnonzero(new_obs["action_mask"]))
@@ -116,6 +116,8 @@ class DeepK(Agent):
 
         with torch.no_grad():
             new = torch.tensor(new_obs["observation"]).T.type(torch.FloatTensor).unsqueeze(0)
+            if CFG.small_obs:
+                new = new[:, 0:20, :, :]
             val = self.net(new).squeeze(0)
             valid_actions = torch.tensor(
                 np.squeeze(np.argwhere(new_obs["action_mask"] == 1).T, axis=0)

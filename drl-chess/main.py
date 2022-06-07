@@ -55,7 +55,7 @@ def gen_data():
 
 def load_agent():
 
-    CFG.init(net_type="conv", debug=False, reward_SF=True, depth=1)
+    CFG.init(net_type="conv", debug=False, reward_SF=True, depth=1, small_obs=False)
 
     agt = agent.DeepK()
     dir = os.path.join(os.path.dirname(__file__), f'../data')
@@ -63,30 +63,28 @@ def load_agent():
         print(dir)
         for obs in utils.from_disk(dir):
             agt.obs.append(obs)
-            print(len(agt.obs))
-            if len(agt.obs) == CFG.batch_size:
-                print("train")
+            if len(agt.obs) >= CFG.batch_size:
                 agt.learn()
-                agt.obs = []
-                if DAT.learn_idx % 10 == 0:
+                if DAT.learn_idx % 50 == 0:
                     eval(agt)
+                agt.obs = []
 
     return agt
 
 
-def eval(agt, n_eval=3):
-    eps, CFG.epsilon = CFG.epsilon, 0
+def eval(agt, n_eval=5):
+    CFG.train = False
     agt.net.eval()
     env = game.Game((agt, agent.StockFish()))
     for _ in range(n_eval):
         env.play()
         print('playing')
-    winner = DAT.stats['outcome'][:-n_eval]
+    winner = DAT.stats['outcome'][-n_eval:]
     wins = winner.count('1-0')
     draw = winner.count('1/2-1/2')
     print(f'{agt} a gagné {wins}/{n_eval} et a fait {draw} nuls')
     agt.net.train()
-    CFG.epsilon = eps
+    CFG.train=True
 
 
 
