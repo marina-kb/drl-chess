@@ -63,6 +63,7 @@ def load_agent():
         print(dir)
         for obs in utils.from_disk(dir):
             agt.obs.append(obs)
+            print(len(agt.obs))
             if len(agt.obs) == CFG.batch_size:
                 print("train")
                 agt.learn()
@@ -73,7 +74,7 @@ def load_agent():
     return agt
 
 
-def eval(agt, n_eval=10):
+def eval(agt, n_eval=3):
     eps, CFG.epsilon = CFG.epsilon, 0
     agt.net.eval()
     env = game.Game((agt, agent.StockFish()))
@@ -83,10 +84,9 @@ def eval(agt, n_eval=10):
     winner = DAT.stats['outcome'][:-n_eval]
     wins = winner.count('1-0')
     draw = winner.count('1/2-1/2')
-    print(f'{agt[0]} a gagné {wins}/{n_eval} et a fait {draw} nuls')
+    print(f'{agt} a gagné {wins}/{n_eval} et a fait {draw} nuls')
     agt.net.train()
     CFG.epsilon = eps
-    return agt
 
 
 
