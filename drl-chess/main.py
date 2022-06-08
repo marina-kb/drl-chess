@@ -95,6 +95,10 @@ def eval(agt, n_eval=10):
     if sum(win) > 0:
         print("KASPAROV")
 
+    DAT.tot_win += win.count(1)
+    DAT.tot_draw += win.count(1)
+    print(f'Since init: total wins {DAT.tot_win} & total draws {DAT.tot_draw}')
+
     agt.net.train()
     CFG.train=True
     agt.obs = []
