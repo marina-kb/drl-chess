@@ -2,6 +2,8 @@ import math
 import os
 import matplotlib.pyplot as plt
 
+from pettingzoo.classic.chess.chess_utils import result_to_int
+
 import game
 import agent
 from config import CFG
@@ -62,16 +64,18 @@ def load_agent():
 
     agt = agent.DeepK()
     dir = os.path.join(os.path.dirname(__file__), f'../data')
-    for idx, dir in enumerate(utils.get_files(dir)):
-        print(dir)
-        for obs in utils.from_disk(dir):
-            agt.obs.append(obs)
-            if len(agt.obs) >= CFG.batch_size:
-                agt.learn()
-                agt.obs = []
-        print(f"Training loss: {DAT.stats['loss'][-1]}")
-        if idx % 3 == 0:
-            eval(agt)
+
+    while True:
+        for idx, dir in enumerate(utils.get_files(dir)):
+            print(dir)
+            for obs in utils.from_disk(dir):
+                agt.obs.append(obs)
+                if len(agt.obs) >= CFG.batch_size:
+                    agt.learn()
+                    agt.obs = []
+            print(f"Training loss: {DAT.stats['loss'][-1]}")
+            if idx % 3 == 0:
+                eval(agt)
 
     return agt
 
@@ -84,17 +88,16 @@ def eval(agt, n_eval=10):
 
     for _ in range(n_eval):
         env.play()
-    winner = DAT.stats['outcome'][-n_eval:]
-    wins = winner.count('1-0')
-    draw = winner.count('1/2-1/2')
-    print(f'{DAT.eval_idx}: Wins {wins}, Losses {5 - wins - draw}, Draws {draw} \n')
-    if wins > 0:
-        print("KASPAROV!!!!!!! \n \n \n")
+
+    win = list(map(result_to_int, DAT.stats['outcome'][-n_eval:]))
+    DAT.stats['eval'].append((win.count(0), win.count(1), win.count(-1)))
+    print(f'{DAT.eval_idx}: Wins {win.count(1)}, Draws {win.count(0)}, Losses {win.count(-1)} \n')
+    if sum(win) > 0:
+        print("KASPAROV")
 
     agt.net.train()
     CFG.train=True
     agt.obs = []
-
 
 
 

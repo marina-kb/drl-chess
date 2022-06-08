@@ -8,6 +8,9 @@ import os
 import glob
 import matplotlib.pyplot as plt
 import torch
+import pandas as pd
+from data import DAT
+
 
 def to_disk(obs):
 
@@ -71,6 +74,28 @@ def plot_stats(DAT, figsize=(15,10)):
     plt.suptitle('loss&rwd')
     plt.show()
     print(DAT.stats['outcome'])
+
+
+def plot_hist():
+
+    drw, win, loss = zip(*DAT.stats['eval'])
+
+    idx = []
+    for i in range(len(win)):
+        idx.append(f"Eval Group {i+1}")
+
+    results_df = pd.DataFrame(data={'Wins':win, 'Draws':drw, '--':loss},
+                                index=idx)
+
+    # print(results_df)
+
+    fig, ax0 = plt.subplots(nrows=1, ncols=1)
+    colors = ['green', 'yellow', 'white']
+    results_df.plot.bar(stacked=True, ax=ax0, color=colors)
+    ax0.legend(prop={'size': 10})
+    ax0.set_title('bars with legend')
+    plt.show()
+
 
 
 #Viannou va écrire une super fonction ci-dessous
