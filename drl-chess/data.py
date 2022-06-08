@@ -13,7 +13,7 @@ class Data:
         self.learn_idx = 0
         self.past = {0: None, 1: None}
         self.score = {0: [0], 1: [0]}
-        self.stats = {'outcome': [], 'loss': [], 'reward_1': [], 'reward_2': []}
+        self.stats = {'outcome': [], 'loss': [0], 'reward_1': [], 'reward_2': []}
 
     def reset(self, hard=False):
         self.past = {0: None, 1: None}
