@@ -19,11 +19,11 @@ class Configuration:
         Declare types but do not instanciate anything
         """
         self.alpha = 0.2
-        self.gamma = 0.98
+        self.gamma = 1
         self.epsilon = None
         self.epsilon_decay = 0.01
 
-        self.learning_rate = 0.005
+        self.learning_rate = 0.001
         self.max_norm = 0.3
 
         self.rnd_seed = None
@@ -35,7 +35,7 @@ class Configuration:
         self.depth = 5
 
         self.buffer_size = 10000
-        self.batch_size = 10
+        self.batch_size = 1024
         self.weight_updt = 50
 
         self.debug = False

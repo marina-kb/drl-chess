@@ -13,7 +13,7 @@ import collections
 from data import DAT
 from config import CFG
 from engine import Engine
-from network import Conv, Linear
+from network import Conv, Linear, DistinctLayer
 
 class Agent:
     def __init__(self):
@@ -30,7 +30,7 @@ class DeepK(Agent):
     def __init__(self):
         super().__init__()
 
-        agt_t = {"conv": Conv, "linear": Linear}
+        agt_t = {"conv": Conv, "linear": Linear, 'distinct': DistinctLayer}
 
         self.net = agt_t[CFG.net_type]()
 
@@ -88,9 +88,9 @@ class DeepK(Agent):
         # Perform a backward propagation.
         self.opt.zero_grad()
         loss.sum().backward()
-        torch.nn.utils.clip_grad_norm_(self.net.parameters(),   # Input Gradient Clipping
-                                       max_norm=CFG.max_norm, )
-                                       #norm_type=2)
+        # torch.nn.utils.clip_grad_norm_(self.net.parameters(),   # Input Gradient Clipping
+        #                               max_norm=CFG.max_norm, )
+        #                               #norm_type=2)
         self.opt.step()
 
         # Target Network: by Viannou_lb
