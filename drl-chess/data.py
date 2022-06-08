@@ -8,6 +8,7 @@ from config import CFG
 
 class Data:
     def __init__(self):
+        self.feed_idx = 0
         self.eval_idx = 0
         self.learn_idx = 0
         self.past = {0: None, 1: None}

@@ -23,7 +23,7 @@ class Configuration:
         self.epsilon = None
         self.epsilon_decay = 0.01
 
-        self.learning_rate = 0.001
+        self.learning_rate = 0.1
         self.max_norm = 0.3
 
         self.rnd_seed = None

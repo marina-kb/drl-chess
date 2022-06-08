@@ -18,7 +18,7 @@ def stop_eng():
 def main(agt=None):
 
     CFG.init(net_type='conv', debug=False, reward_SF=True,  small_obs=True,
-             learning_rate = 0.0005)
+             learning_rate = 0.1)
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())

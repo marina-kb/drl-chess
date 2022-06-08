@@ -46,13 +46,15 @@ class DeepK(Agent):
         Learn from a single observation sample.
         """
 
+        DAT.feed_idx += 1
+
         old = torch.tensor(obs_old["observation"]).T
         act = torch.tensor(act)
         rwd = torch.tensor(rwd)
         new = torch.tensor(obs_new["observation"]).T
 
         self.obs.append((old, act, rwd, new))
-        if len(self.obs) >= CFG.batch_size and CFG.train:
+        if len(self.obs) >= CFG.batch_size and (DAT.feed_idx % (CFG.batch_size/4) == 0) and CFG.train:
             self.learn()
 
     def learn(self):
