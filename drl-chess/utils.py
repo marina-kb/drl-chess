@@ -12,7 +12,7 @@ import torch
 def to_disk(obs):
 
     pdt = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    dir = os.path.join(os.path.dirname(__file__), f'../data/{pdt}_databatch.pkl')
+    dir = os.path.join(os.path.dirname(__file__), f'../data-nosf/{pdt}_databatch.pkl')
 
     with open(dir, 'wb') as file:
         pickle.dump(obs, file)
@@ -31,13 +31,21 @@ def get_files(dir):
 
 def plot_stats(DAT, figsize=(15,10)):
 
-    fig = plt.figure(figsize=figsize)  # TODO Move to utils
+    fig = plt.figure(figsize=figsize)
 
     # Loss subplot
     plt.subplot(2,2,1)
     plt.plot(DAT.stats['loss'], label='mean loss')
     plt.title('mean loss')
     plt.legend()
+
+    # Win track
+    plt.subplot(2,2,2)
+    info = DAT.stats['outcome']
+    l=[int(i[0]) for i in info]
+    plt.plot(l)
+    #plt.plot(DAT.stats['outcome'])
+    plt.title("Win")
 
     # Reward player 0 subplot
     plt.subplot(2,2,3)
@@ -51,9 +59,19 @@ def plot_stats(DAT, figsize=(15,10)):
     # plt.ylim(-1,1)
     plt.title("cumulative reward SF")
 
+    # info = DAT.stats['outcome']
+    # l=[int(i[0]) for i in info]
+    # plt.subplot(2,2,4)
+    # sns.histplot(data=l, x='value', hue='val_type', multiple='dodge', discrete=True,
+    #       edgecolor='white', palette=plt.cm.Accent, alpha=1)
+
+
+
     # Global figure methods
     plt.suptitle('loss&rwd')
     plt.show()
+    print(DAT.stats['outcome'])
+
 
 #Viannou va écrire une super fonction ci-dessous
 def w8_loader(model,file_name):

@@ -94,8 +94,8 @@ def eval(agt, n_eval=5):
 
 
 
-# while True:
-#     gen_data()
+while True:
+    gen_data()
 
 # for _ in range(10):
 #     gen_data()
@@ -103,6 +103,6 @@ def eval(agt, n_eval=5):
 
 # load_agent()
 
-main()
+# main()
 
-utils.plot_stats(DAT)
+# utils.plot_stats(DAT)
