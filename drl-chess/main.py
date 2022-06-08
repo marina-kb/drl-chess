@@ -35,7 +35,8 @@ def main(agt=None):
 
 def gen_data():
 
-    CFG.init(net_type="conv", debug=False, reward_SF=True)
+    DAT.reset(True)
+    CFG.init(net_type="conv", debug=False, reward_SF=False)
 
     agt = (agent.ObservationGenerator(), agent.ObservationGenerator())
     env = game.Game(agt)

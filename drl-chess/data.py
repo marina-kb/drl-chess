@@ -13,9 +13,11 @@ class Data:
         self.score = {0: [0], 1: [0]}
         self.stats = {'outcome': [], 'loss': [], 'reward_1': [], 'reward_2': []}
 
-    def reset(self):
+    def reset(self, hard=False):
         self.past = {0: None, 1: None}
         self.score = {0: [0], 1: [0]}
+        if hard:
+            self.__init__()
 
     def set_data(self, data, idx):
         self.past[idx] = data
