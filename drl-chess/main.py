@@ -17,20 +17,20 @@ def stop_eng():
 
 def main(agt=None):
 
-    CFG.init(net_type="conv", reward_SF=True, debug=False, small_obs=False)
+    CFG.init(net_type="conv", debug=False, reward_SF=False,  small_obs=False)
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())
     env = game.Game(agt)
 
-    for n in range(5):
-        CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
-        print(f"Playing game {n}")
-        env.play()
-        # print(f"outcome : {DAT.stats['outcome'][-1]}")
-        print(f"loss : {DAT.stats['loss'][-1]} \n")
+    while True:
 
-    stop_eng()
+        for n in range(50):
+            CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
+            env.play()
+
+        print(f"loss : {DAT.stats['loss'][-1]}")
+        eval(agt[0])
 
 
 def gen_data():
@@ -66,15 +66,15 @@ def load_agent():
             agt.obs.append(obs)
             if len(agt.obs) >= CFG.batch_size:
                 agt.learn()
-                if DAT.learn_idx % 50 == 0:
-                    print(f"Training loss: {DAT.stats['loss'][-1]}")
-                    eval(agt)
                 agt.obs = []
+        print(f"Training loss: {DAT.stats['loss'][-1]}")
+        eval(agt)
 
     return agt
 
 
 def eval(agt, n_eval=5):
+    DAT.eval_idx += 1
     CFG.train = False
     agt.net.eval()
     env = game.Game((agt, agent.StockFish()))
@@ -84,18 +84,19 @@ def eval(agt, n_eval=5):
     winner = DAT.stats['outcome'][-n_eval:]
     wins = winner.count('1-0')
     draw = winner.count('1/2-1/2')
-    print(f'Wins {wins}, Losses {5 - wins - draw}, Draws {draw} \n')
-    if wins > n_eval/2:
-        print("KASPAROV")
+    print(f'{DAT.eval_idx}: Wins {wins}, Losses {5 - wins - draw}, Draws {draw} \n')
+    if wins > 0:
+        print("KASPAROV!!!!!!! \n \n \n")
 
     agt.net.train()
     CFG.train=True
+    agt.obs = []
 
 
 
 
-while True:
-    gen_data()
+# while True:
+#     gen_data()
 
 # for _ in range(10):
 #     gen_data()
@@ -103,6 +104,6 @@ while True:
 
 # load_agent()
 
-# main()
+main()
 
 # utils.plot_stats(DAT)

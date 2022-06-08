@@ -12,7 +12,7 @@ import torch
 def to_disk(obs):
 
     pdt = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    dir = os.path.join(os.path.dirname(__file__), f'../data-nosf/{pdt}_databatch.pkl')
+    dir = os.path.join(os.path.dirname(__file__), f'../data/{pdt}_databatch.pkl')
 
     with open(dir, 'wb') as file:
         pickle.dump(obs, file)

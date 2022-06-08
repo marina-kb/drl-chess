@@ -22,6 +22,10 @@ class Configuration:
         self.gamma = 0.98
         self.epsilon = None
         self.epsilon_decay = 0.01
+
+        self.learning_rate = 0.005
+        self.max_norm = 0.3
+
         self.rnd_seed = None
         self.net_type = None
 
@@ -50,7 +54,7 @@ class Configuration:
         self.net_type = net_type
 
         # We set default values for arguments we have to define
-        self.rnd_seed = random.randint(0, 1000)
+        self.rnd_seed = 1   # for diff use: random.randint(0, 1000)
         self.epsilon = 0.05
 
         # However, these arguments can be overriden by passing them as keyword arguments in the init method. Hence, passing for instance epsilon=0.1 as a kwarg to the init method will override the default value we just defined.

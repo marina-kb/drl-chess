@@ -39,7 +39,7 @@ class DeepK(Agent):
         self.tgt.eval()
 
         self.obs = collections.deque(maxlen=CFG.buffer_size)
-        self.opt = torch.optim.Adam(self.net.parameters(), lr=0.001)
+        self.opt = torch.optim.Adam(self.net.parameters(), lr=CFG.learning_rate)
 
     def feed(self, obs_old, act, rwd, obs_new):
         """
@@ -89,7 +89,7 @@ class DeepK(Agent):
         self.opt.zero_grad()
         loss.sum().backward()
         torch.nn.utils.clip_grad_norm_(self.net.parameters(),   # Input Gradient Clipping
-                                       max_norm=0.3, )
+                                       max_norm=CFG.max_norm, )
                                        #norm_type=2)
         self.opt.step()
 
