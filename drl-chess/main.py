@@ -102,8 +102,8 @@ def eval(agt, n_eval=5):
 #     gen_data()
 # stop_eng()
 
-# load_agent()
+load_agent()
 
-main()
+# main()
 
 # utils.plot_stats(DAT)
