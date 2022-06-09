@@ -1,5 +1,12 @@
-# drl-chess
-le wagon project chess with deep reinforcement learning
+# Learning chess through Deep Reinfocment Learning
+
+Le Wagon Project
 
 
-### Install Stockfish
+### To Install Stockfish
+
+For mac:
+`$ brew install stockfish`
+
+For linux VM:
+`$ sudo apt-get update && sudo apt-get -y install stockfish`

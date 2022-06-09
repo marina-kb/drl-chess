@@ -129,7 +129,6 @@ class DistinctLayer(nn.Module):
             nn.LeakyReLU(),
         )
 
-
         self.linear = nn.Sequential(
             nn.Linear(2048, 2048),
             nn.LeakyReLU(),
