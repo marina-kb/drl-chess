@@ -42,7 +42,7 @@ class Conv(nn.Module):
             nn.Linear(800, 2048),
             nn.LeakyReLU(),
             nn.Linear(2048, 4672),
-            nn.LeakyReLU()
+            nn.Tanh()
         )
 
     def forward(self, x):

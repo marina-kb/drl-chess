@@ -60,7 +60,7 @@ def gen_data():
 def load_agent():
 
     CFG.init(net_type="conv", debug=False, reward_SF=False, small_obs=False,   # Check reward SF dependencies
-             depth=5, learning_rate = 0.01)
+             depth=2, learning_rate = 0.01)
 
     agt = agent.DeepK()
     dir = os.path.join(os.path.dirname(__file__), f'../data')
@@ -98,7 +98,7 @@ def eval(agt, n_eval=10):
         print("KASPAROV")
 
     DAT.tot_win += win.count(1)
-    DAT.tot_draw += win.count(1)
+    DAT.tot_draw += win.count(0)
     print(f'Since init: total wins {DAT.tot_win} & total draws {DAT.tot_draw}')
 
     agt.net.train()
