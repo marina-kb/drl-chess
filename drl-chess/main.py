@@ -28,7 +28,6 @@ def main(agt=None):
 
     for n in range(10000):
         CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
-        print(CFG.epsilon)
         env.play()
 
         if n % 150 == 0 and n != 0:
