@@ -58,26 +58,28 @@ def gen_data():
 
 def load_agent():
 
-    CFG.init(net_type="conv", debug=False, reward_SF=True, small_obs=True,   # Check reward SF dependencies
-             learning_rate = 0.1)
+    CFG.init(net_type="conv", debug=False, reward_SF=False, small_obs=False,   # Check reward SF dependencies
+             learning_rate = 0.01)
 
     agt = agent.DeepK()
     dir = os.path.join(os.path.dirname(__file__), f'../data')
 
-    for idx, dir in enumerate(utils.get_files(dir)):
-        print(dir)
-        for obs in utils.from_disk(dir):
-            agt.obs.append(obs)
-            if len(agt.obs) >= CFG.batch_size:
-                agt.learn()
-                agt.obs = []
-        print(f"Training loss: {DAT.stats['loss'][-1]}")
-        if idx % 5 == 0 and idx != 0:
-            eval(agt)
+    for l in range(100):
+        print(f'loop #{l}')
+        for idx, dir in enumerate(utils.get_files(dir)):
+            print(dir)
+            for obs in utils.from_disk(dir):
+                agt.obs.append(obs)
+                if len(agt.obs) >= CFG.batch_size:
+                    agt.learn()
+                    agt.obs = []
+            print(f"Training loss: {DAT.stats['loss'][-1]}")
+            if idx % 5 == 0 and idx != 0:
+                eval(agt)
 
-    #utils.w8_saver(agt, 'pickledmodel')
+    utils.w8_saver(agt, 'pickledmodel')
 
-    main(agt = (agt, agent.StockFish()) )
+    # main(agt = (agt, agent.StockFish()) )
 
 
 def eval(agt, n_eval=5):
@@ -85,7 +87,7 @@ def eval(agt, n_eval=5):
     CFG.train = False
     CFG.depth = 1
     agt.net.eval()
-    env = game.Game((agt, agent.StockFish()))
+    env = game.Game((agt, agent.Random()))
 
     for _ in range(n_eval):
         env.play()
@@ -111,10 +113,10 @@ def eval(agt, n_eval=5):
 #     gen_data()
 
 
-# load_agent()
+load_agent()
 
 
-main()
+# main()
 
 
 # utils.plot_stats(DAT)
