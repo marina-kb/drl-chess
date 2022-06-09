@@ -20,14 +20,14 @@ def stop_eng():
 def main(agt=None):
 
     CFG.init(net_type='conv', debug=False, reward_SF=True,  small_obs=False,
-             learning_rate = 0.01, depth=2, time_to_play=0.1)
+             learning_rate = 0.1, depth=1, time_to_play=0.5)
 
     if agt is None:
-        #agt = (agent.DeepK(), agent.StockFish())         #original agt
-        agt = (utils.w8_loader(agent.DeepK.net,'pickled_model'), agent.StockFish()) # weight loader
+        agt = (agent.DeepK(), agent.StockFish())         #original agt
+        #agt = (utils.w8_loader(agent.DeepK.net,'pickled_model'), agent.StockFish()) # weight loader
     env = game.Game(agt)
 
-    for n in range(1000000):
+    for n in range(10000):
         CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         env.play()
 
@@ -76,9 +76,9 @@ def load_agent():
         if idx % 5 == 0 and idx != 0:
             eval(agt)
 
-    utils.w8_saver(agt, 'pickledmodel')
+    #utils.w8_saver(agt, 'pickledmodel')
 
-    # main(agt = (agt, agent.StockFish() ))
+    main(agt = (agt, agent.StockFish() ))
 
 
     # return agt
