@@ -5,7 +5,7 @@ Game Module.
 from pettingzoo.classic import chess_v5
 import matplotlib.pyplot as plt
 
-from data import DAT, Data
+from data import DAT
 from config import CFG
 
 
