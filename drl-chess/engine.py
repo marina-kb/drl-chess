@@ -22,6 +22,7 @@ class Engine:
 
         # self.engine.configure({"Hash": 1024, "Threads": 8})
         self.limit = chess.engine.Limit(time=0.1)
+        self.engine.configure({"Skill Level": 1})
         # TODO Test 0.02 and others
 
     def rating(self, board, idx):

@@ -19,8 +19,8 @@ def stop_eng():
 
 def main(agt=None):
 
-    CFG.init(net_type='distinct', debug=False, reward_SF=True,  small_obs=True,
-             learning_rate = 0.01, depth=1, time_to_play=0.1)
+    CFG.init(net_type='conv', debug=True, reward_SF=True,  small_obs=False,
+             learning_rate = 0.01, depth=2, time_to_play=0.05)
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())
@@ -30,6 +30,7 @@ def main(agt=None):
 
         for n in range(50):
             CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
+            print(CFG.epsilon)
             env.play()
 
         print(f"loss : {DAT.stats['loss'][-1]}")
@@ -59,7 +60,7 @@ def gen_data():
 
 def load_agent():
 
-    CFG.init(net_type="distinct", debug=False, reward_SF=True, small_obs=True,   # Check reward SF dependencies
+    CFG.init(net_type="conv", debug=False, reward_SF=True, small_obs=True,   # Check reward SF dependencies
              depth=1, learning_rate = 0.01)
 
     agt = agent.DeepK()
@@ -86,7 +87,7 @@ def eval(agt, n_eval=10):
     DAT.eval_idx += 1
     CFG.train = False
     agt.net.eval()
-    env = game.Game((agt, agent.StockFish()))
+    env = game.Game((agt, agent.Random()))
 
     for _ in range(n_eval):
         env.play()
