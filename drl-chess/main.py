@@ -19,7 +19,7 @@ def stop_eng():
 
 def main(agt=None):
 
-    CFG.init(net_type='conv', debug=True, reward_SF=True,  small_obs=False,
+    CFG.init(net_type='conv', debug=False, reward_SF=True,  small_obs=True,
              learning_rate = 0.01, depth=2, time_to_play=0.05)
 
     if agt is None:
@@ -61,7 +61,7 @@ def gen_data():
 def load_agent():
 
     CFG.init(net_type="conv", debug=False, reward_SF=True, small_obs=True,   # Check reward SF dependencies
-             depth=1, learning_rate = 0.01)
+             depth=1, learning_rate = 0.1)
 
     agt = agent.DeepK()
     dir = os.path.join(os.path.dirname(__file__), f'../data')
@@ -74,7 +74,7 @@ def load_agent():
                 agt.learn()
                 agt.obs = []
         print(f"Training loss: {DAT.stats['loss'][-1]}")
-        if idx % 3 == 0:
+        if idx % 5 == 0:
             eval(agt)
 
     main(agt = (agt, agent.StockFish() ))
@@ -83,7 +83,7 @@ def load_agent():
     # return agt
 
 
-def eval(agt, n_eval=10):
+def eval(agt, n_eval=5):
     DAT.eval_idx += 1
     CFG.train = False
     agt.net.eval()
