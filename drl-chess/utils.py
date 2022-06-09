@@ -107,5 +107,5 @@ def w8_loader(model,file_name):
 
 def w8_saver(model,file_name):
     dir = os.path.join(os.path.dirname(__file__), f'../weights/{file_name}')
-    torch.save(model.state_dict(), dir)
+    torch.save(model.net.state_dict(), dir)
     return
