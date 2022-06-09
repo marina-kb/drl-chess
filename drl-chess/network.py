@@ -19,28 +19,28 @@ class Conv(nn.Module):
         self.net = nn.Sequential(
             nn.Conv2d(self.input_shape, 256, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(256),
-            nn.LeakyReLU(),
+            nn.ReLU(),
             nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
             #nn.MaxPool2d(3, stride=2),
             nn.BatchNorm2d(256),
-            nn.LeakyReLU(),
-            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(256),
-            nn.LeakyReLU(),
-            nn.Conv2d(256, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(256, 32, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.Conv2d(32, 128, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(128),
-            nn.LeakyReLU(),
+            nn.ReLU(),
             nn.Conv2d(128, 16, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(16),
-            nn.LeakyReLU(),
+            nn.ReLU(),
             nn.Conv2d(16, 8, kernel_size=1, stride=1, padding=1),
             nn.BatchNorm2d(8),
-            nn.LeakyReLU()
+            nn.ReLU()
         )
 
         self.linear = nn.Sequential(
             nn.Linear(800, 2048),
-            nn.LeakyReLU(),
+            nn.ReLU(),
             nn.Linear(2048, 4672),
             nn.Tanh()
         )

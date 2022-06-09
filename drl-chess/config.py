@@ -31,11 +31,11 @@ class Configuration:
 
         self.reward_SF = True
         self.engine = None
-        self.time_to_play = 0.05
+        self.time_to_play = 0.1
         self.depth = 5
 
         self.buffer_size = 10000
-        self.batch_size = 512
+        self.batch_size = 1024
         self.weight_updt = 50
 
         self.debug = False

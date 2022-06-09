@@ -19,8 +19,8 @@ def stop_eng():
 
 def main(agt=None):
 
-    CFG.init(net_type='conv', debug=False, reward_SF=True,  small_obs=False,
-             learning_rate = 0.01)
+    CFG.init(net_type='conv', debug=False, reward_SF=False,  small_obs=False,
+             learning_rate = 0.01, depth=1, time_to_play=0.05)
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())
@@ -114,8 +114,8 @@ def eval(agt, n_eval=10):
 #     gen_data()
 # stop_eng()
 
-load_agent()
+# load_agent()
 
-# main()
+main()
 
 # utils.plot_stats(DAT)
