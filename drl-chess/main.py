@@ -74,10 +74,12 @@ def load_agent():
                 agt.learn()
                 agt.obs = []
         print(f"Training loss: {DAT.stats['loss'][-1]}")
-        if idx % 5 == 0:
+        if idx % 5 == 0 and idx != 0:
             eval(agt)
 
-    main(agt = (agt, agent.StockFish() ))
+    utils.w8_saver(agt, 'pickledmodel')
+
+    # main(agt = (agt, agent.StockFish() ))
 
 
     # return agt
