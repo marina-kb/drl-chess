@@ -19,8 +19,8 @@ def stop_eng():
 
 def main(agt=None):
 
-    CFG.init(net_type='conv', debug=False, reward_SF=True,  small_obs=True,
-             learning_rate = 0.1)
+    CFG.init(net_type='conv', debug=False, reward_SF=True,  small_obs=False,
+             learning_rate = 0.01)
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())
@@ -28,7 +28,7 @@ def main(agt=None):
 
     while True:
 
-        for n in range(50):
+        for n in range(150):
             CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
             env.play()
 
@@ -60,24 +60,26 @@ def gen_data():
 def load_agent():
 
     CFG.init(net_type="conv", debug=False, reward_SF=False, small_obs=False,   # Check reward SF dependencies
-             depth=1, learning_rate = 0.1)
+             depth=5, learning_rate = 0.01)
 
     agt = agent.DeepK()
     dir = os.path.join(os.path.dirname(__file__), f'../data')
 
-    while True:
-        for idx, dir in enumerate(utils.get_files(dir)):
-            print(dir)
-            for obs in utils.from_disk(dir):
-                agt.obs.append(obs)
-                if len(agt.obs) >= CFG.batch_size:
-                    agt.learn()
-                    agt.obs = []
-            print(f"Training loss: {DAT.stats['loss'][-1]}")
-            if idx % 3 == 0:
-                eval(agt)
+    for idx, dir in enumerate(utils.get_files(dir)):
+        print(dir)
+        for obs in utils.from_disk(dir):
+            agt.obs.append(obs)
+            if len(agt.obs) >= CFG.batch_size:
+                agt.learn()
+                agt.obs = []
+        print(f"Training loss: {DAT.stats['loss'][-1]}")
+        if idx % 3 == 0:
+            eval(agt)
 
-    return agt
+    main(agt = (agt, agent.StockFish() ))
+
+
+    # return agt
 
 
 def eval(agt, n_eval=10):
