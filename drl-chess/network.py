@@ -90,8 +90,32 @@ class DistinctLayer(nn.Module):
     def __init__(self):
         super(DistinctLayer, self).__init__()
 
+        self.glob = nn.Sequential(
+            nn.Conv2d(7, 64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64),
+            nn.LeakyReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64),
+            nn.LeakyReLU(),
+            nn.Conv2d(64, 32, kernel_size=1, stride=1, padding=0),
+            nn.BatchNorm2d(32),
+            nn.LeakyReLU(),
+        )
+
+        self.pieces = nn.Sequential(
+            nn.Conv2d(13, 64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64),
+            nn.LeakyReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64),
+            nn.LeakyReLU(),
+            nn.Conv2d(64, 32, kernel_size=1, stride=1, padding=0),
+            nn.BatchNorm2d(32),
+            nn.LeakyReLU(),
+        )
+
         self.net = nn.Sequential(
-            nn.Conv2d(20, 256, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(64, 256, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(256),
             nn.LeakyReLU(),
             nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
@@ -100,36 +124,13 @@ class DistinctLayer(nn.Module):
             nn.Conv2d(256, 128, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(128),
             nn.LeakyReLU(),
-            nn.Conv2d(128, 128, kernel_size=1, stride=1, padding=1),
-            nn.BatchNorm2d(128),
+            nn.Conv2d(128, 32, kernel_size=1, stride=1, padding=0),
+            nn.BatchNorm2d(32),
             nn.LeakyReLU(),
         )
 
-        self.glob = nn.Sequential(
-            nn.Conv2d(7, 256, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(256),
-            nn.LeakyReLU(),
-            nn.Conv2d(256, 128, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(128),
-            nn.LeakyReLU(),
-            nn.Conv2d(128, 16, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(16),
-            nn.LeakyReLU(),
-        )
 
-        self.pieces = nn.Sequential(
-            nn.Conv2d(13, 256, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(256),
-            nn.LeakyReLU(),
-            nn.Conv2d(256, 128, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(128),
-            nn.LeakyReLU(),
-            nn.Conv2d(128, 16, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(16),
-            nn.LeakyReLU(),
-        )
-
-        self.reunion = nn.Sequential(
+        self.linear = nn.Sequential(
             nn.Linear(2048, 2048),
             nn.LeakyReLU(),
             nn.Linear(2048, 4672),
@@ -139,12 +140,16 @@ class DistinctLayer(nn.Module):
     def forward(self, x):
 
         y_g = self.glob(x[:, 0:7, :, :])
-
+        # print(y_g.shape)
 
         y_p = self.pieces(x[:, 7:21, :, :])
 
         y = torch.cat((y_g, y_p), 1)
+        # print(y.shape)
+
+        y = self.net(y)
+        # print(y.shape)
 
         y = torch.flatten(y, start_dim=1, end_dim=-1)
 
-        return self.reunion(y)
+        return self.linear(y)
