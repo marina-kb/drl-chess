@@ -35,7 +35,7 @@ class Configuration:
         self.depth = 2
 
         self.buffer_size = 10000
-        self.batch_size = 512
+        self.batch_size = 1024
         self.weight_updt = 50
 
         self.debug = False

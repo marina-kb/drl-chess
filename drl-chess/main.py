@@ -11,7 +11,6 @@ from data import DAT
 import utils
 
 
-
 def stop_eng():
     if CFG.engine is not None:
         CFG.engine.stop_engine()
@@ -19,15 +18,15 @@ def stop_eng():
 
 def main(agt=None):
 
-    CFG.init(net_type='conv', debug=False, reward_SF=True,  small_obs=False,
-             learning_rate = 0.1, depth=1, time_to_play=0.5)
+    CFG.init(net_type='conv', debug=False, reward_SF=False,  small_obs=True,
+             learning_rate = 0.01, depth=4, time_to_play=0.1)
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())         #original agt
         #agt = (utils.w8_loader(agent.DeepK.net,'pickled_model'), agent.StockFish()) # weight loader
     env = game.Game(agt)
 
-    for n in range(10000):
+    for n in range(100000):
         CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         env.play()
 
@@ -78,10 +77,7 @@ def load_agent():
 
     #utils.w8_saver(agt, 'pickledmodel')
 
-    main(agt = (agt, agent.StockFish() ))
-
-
-    # return agt
+    main(agt = (agt, agent.StockFish()) )
 
 
 def eval(agt, n_eval=5):
@@ -112,12 +108,11 @@ def eval(agt, n_eval=5):
 # while True:
 #     gen_data()
 
-# for _ in range(10):
-#     gen_data()
-# stop_eng()
 
 # load_agent()
 
+
 main()
+
 
 # utils.plot_stats(DAT)
