@@ -26,15 +26,14 @@ def main(agt=None):
         agt = (agent.DeepK(), agent.StockFish())
     env = game.Game(agt)
 
-    while True:
+    for n in range(10000):
+        CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
+        print(CFG.epsilon)
+        env.play()
 
-        for n in range(50):
-            CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
-            print(CFG.epsilon)
-            env.play()
-
-        print(f"loss : {DAT.stats['loss'][-1]}")
-        eval(agt[0])
+        if n % 150 == 0 and n != 0:
+            print(f"loss : {DAT.stats['loss'][-1]}")
+            eval(agt[0])
 
 
 def gen_data():
