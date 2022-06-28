@@ -26,7 +26,7 @@ brew install stockfish
 
 Otherwise:
 ```bash
-sudo apt-get update && sudo apt-get -y install stockfish
+sudo apt-get -y install stockfish
 ```
 
 ### Basic Usage

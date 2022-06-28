@@ -1,8 +1,8 @@
 __pycache__/
-*.py[cod]
-*.DS_Store
-*.python-version
 .direnv/*
+*.DS_Store
+*.envrc
+*.py[cod]
+*.python-version
 data/
-data-test/
 weights/
