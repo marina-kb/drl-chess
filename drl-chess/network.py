@@ -1,6 +1,7 @@
 """"
 Neural Network
 """
+
 import torch
 import torch.nn as nn
 
@@ -21,7 +22,6 @@ class Conv(nn.Module):
             nn.BatchNorm2d(256),
             nn.LeakyReLU(),
             nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
-            #nn.MaxPool2d(3, stride=2),
             nn.BatchNorm2d(256),
             nn.LeakyReLU(),
             nn.Conv2d(256, 32, kernel_size=3, stride=1, padding=1),
@@ -35,14 +35,11 @@ class Conv(nn.Module):
             nn.LeakyReLU(),
             nn.Conv2d(16, 8, kernel_size=1, stride=1, padding=0),
             nn.BatchNorm2d(8),
-            nn.LeakyReLU()
+            nn.LeakyReLU(),
         )
 
         self.linear = nn.Sequential(
-            nn.Linear(512, 2048),
-            nn.LeakyReLU(),
-            nn.Linear(2048, 4672),
-            nn.Tanh()
+            nn.Linear(512, 2048), nn.LeakyReLU(), nn.Linear(2048, 4672), nn.Tanh()
         )
 
     def forward(self, x):
@@ -51,34 +48,6 @@ class Conv(nn.Module):
         y = torch.flatten(y, start_dim=1, end_dim=-1)
 
         return self.linear(y)
-
-
-class Linear(nn.Module):
-    """
-    A simple Deep Q-Network with 3 linear layers.
-    """
-
-    def __init__(self):
-        super(Linear, self).__init__()
-        self.input_shape = 20 if CFG.small_obs else 111
-
-        self.net = nn.Sequential(
-            nn.Flatten(1, -1),
-            nn.Linear((self.input_shape * 64), 256),    # arg1 = 111 * 8 * 8 parameters
-            # nn.ReLU(inplace=True),
-            # nn.BatchNorm1d(256),
-            nn.Linear(256, 256),
-            # nn.BatchNorm1d(256),
-            nn.Linear(256, 128),
-            # nn.BatchNorm1d(128),
-            nn.Linear(128, 4672),
-            nn.ReLU(inplace=True)
-        )
-
-    def forward(self, x):
-        y = self.net(x)
-        # y = torch.flatten(y, start_dim=0, end_dim=-2)
-        return y
 
 
 class DistinctLayer(nn.Module):
@@ -130,25 +99,16 @@ class DistinctLayer(nn.Module):
         )
 
         self.linear = nn.Sequential(
-            nn.Linear(2048, 2048),
-            nn.LeakyReLU(),
-            nn.Linear(2048, 4672),
-            nn.Tanh()
+            nn.Linear(2048, 2048), nn.LeakyReLU(), nn.Linear(2048, 4672), nn.Tanh()
         )
 
     def forward(self, x):
 
         y_g = self.glob(x[:, 0:7, :, :])
-        # print(y_g.shape)
-
         y_p = self.pieces(x[:, 7:21, :, :])
-
         y = torch.cat((y_g, y_p), 1)
-        # print(y.shape)
 
         y = self.net(y)
-        # print(y.shape)
-
         y = torch.flatten(y, start_dim=1, end_dim=-1)
 
         return self.linear(y)

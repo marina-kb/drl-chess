@@ -2,18 +2,19 @@
 Agent module.
 """
 
-from code import interact
 import random
 import numpy as np
-import chess.engine
-from pettingzoo.classic.chess import chess_utils
 import torch
 import collections
+
+import chess.engine
+from pettingzoo.classic.chess import chess_utils
 
 from data import DAT
 from config import CFG
 from engine import Engine
-from network import Conv, Linear, DistinctLayer
+from network import Conv, DistinctLayer
+
 
 class Agent:
     def __init__(self):
@@ -30,7 +31,7 @@ class DeepK(Agent):
     def __init__(self):
         super().__init__()
 
-        agt_t = {"conv": Conv, "linear": Linear, 'distinct': DistinctLayer}
+        agt_t = {"conv": Conv, "distinct": DistinctLayer}
 
         self.net = agt_t[CFG.net_type]()
 
@@ -54,7 +55,11 @@ class DeepK(Agent):
         new = torch.tensor(obs_new["observation"]).T
 
         self.obs.append((old, act, rwd, new))
-        if len(self.obs) >= CFG.batch_size and (DAT.feed_idx % (CFG.batch_size/4) == 0) and CFG.train:
+        if (
+            len(self.obs) >= CFG.batch_size
+            and (DAT.feed_idx % (CFG.batch_size / 4) == 0)
+            and CFG.train
+        ):
             self.learn()
 
     def learn(self):
@@ -85,23 +90,20 @@ class DeepK(Agent):
         loss = torch.square(exp - out)
         if CFG.debug:
             print("loss", loss, "\n")
-        DAT.set_loss(np.mean(loss.tolist()))   # Adds mean loss of batch
+        DAT.set_loss(np.mean(loss.tolist()))  # Adds mean loss of batch.
 
         # Perform a backward propagation.
         self.opt.zero_grad()
         loss.sum().backward()
-        # torch.nn.utils.clip_grad_norm_(self.net.parameters(),   # Input Gradient Clipping
+        ## Input Gradient Clipping.
+        # torch.nn.utils.clip_grad_norm_(self.net.parameters(),
         #                               max_norm=CFG.max_norm, )
         #                               #norm_type=2)
         self.opt.step()
 
-        # Target Network: by Viannou_lb
+        # Target Network
         if DAT.learn_idx % CFG.weight_updt == 0:
             self.tgt.load_state_dict(self.net.state_dict())
-
-        # TODO code an evaluation method to stop the learning every n batch and
-        # do a couple games vs. Stockfish to evaluate the model's progress
-
 
     def move(self, new_obs, board):
         """
@@ -115,9 +117,12 @@ class DeepK(Agent):
             return random.choice(np.flatnonzero(new_obs["action_mask"]))
 
         # Else, return action with highest value
-
         with torch.no_grad():
-            new = torch.tensor(new_obs["observation"]).T.type(torch.FloatTensor).unsqueeze(0)
+            new = (
+                torch.tensor(new_obs["observation"])
+                .T.type(torch.FloatTensor)
+                .unsqueeze(0)
+            )
             if CFG.small_obs:
                 new = new[:, 0:20, :, :]
             val = self.net(new).squeeze(0)
@@ -153,12 +158,15 @@ class StockFish(Agent):
         panel = chess_utils.get_move_plane(move)
         return (x * 8 + y) * 73 + panel
 
-    def _move(self, board):   # TODO, Maybe. Move this to the engine class to encapsulate stockfish.
+    def _move(self, board):
+        # TODO, Maybe. Move this to the engine class to encapsulate stockfish.
         if board.turn == False:
             board = board.mirror()
 
-        move = CFG.engine.engine.play(board=board, limit=chess.engine.Limit(
-            time=CFG.time_to_play, depth=CFG.depth))   # TODO Test Different Settings / Depths
+        move = CFG.engine.engine.play(
+            board=board,
+            limit=chess.engine.Limit(time=CFG.time_to_play, depth=CFG.depth),
+        )  # TODO Test Different Settings & Depths
 
         return self.move_to_act(move.move)
 

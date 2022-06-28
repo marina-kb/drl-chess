@@ -1,6 +1,7 @@
 """
 Configuration Module.
-This module defines a singleton-type configuration class that can be used all across our project. This class can contain any parameter that one may want to change from one simulation run to the other.
+This module defines a singleton-type configuration class that can be used all across our project.
+This class can contain any parameter that one may want to change from one simulation run to the other.
 """
 
 import random
@@ -44,7 +45,6 @@ class Configuration:
 
         self.train = True
 
-
     def init(self, net_type, **kwargs):
         """
         User-defined configuration init. Mandatory to properly set all configuration parameters.
@@ -54,7 +54,7 @@ class Configuration:
         self.net_type = net_type
 
         # We set default values for arguments we have to define
-        self.rnd_seed = 1   # for diff use: random.randint(0, 1000)
+        self.rnd_seed = 1  # for diff use: random.randint(0, 1000)
         self.epsilon = 0.05
 
         # However, these arguments can be overriden by passing them as keyword arguments in the init method. Hence, passing for instance epsilon=0.1 as a kwarg to the init method will override the default value we just defined.
@@ -62,8 +62,6 @@ class Configuration:
 
         # Once all values are properly set, use them.
         random.seed(self.rnd_seed)
-
-        # import engine
 
         # Adding Stockfish engine:
         if self.reward_SF:

@@ -39,7 +39,7 @@ class Game:
 
             act = agt.move(new, self.board())
             if CFG.debug:
-                print(f'Move : {act}')
+                print(f"Move : {act}")
             self.game_env.step(act)
 
             DAT.set_data((new, act), idx)
@@ -51,3 +51,9 @@ class Game:
             idx = 1 - idx
 
         self.game_env.reset()
+
+
+# TODO Look into using return_info at reset (from Gym lib):
+#     if done:
+#         observation, info = env.reset(return_info=True)
+# env.close()

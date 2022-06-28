@@ -1,12 +1,12 @@
 chess
-matplotlib
-torch
-numpy
-pettingzoo==1.18.1
-pettingzoo[classic]
 ipdb
+matplotlib
+numpy
 pandas
+pettingzoo[classic]
+pettingzoo==1.18.1
+torch
 
-# pettingzoo==1.10.0
-## Version to use chessV3 and get 8x8x20 obsv shape
+
+## Replace with pettingzoo==1.10.0 to use chessV3 and get 8x8x20 obsv shape by default
 ## See also https://github.com/Farama-Foundation/PettingZoo/blob/0005f21398757796be65f282427149e470507983/pettingzoo/classic/chess/chess_utils.py#L196

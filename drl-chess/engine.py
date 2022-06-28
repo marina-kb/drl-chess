@@ -6,24 +6,25 @@ import subprocess
 import chess.engine
 import os
 
+
 class Engine:
     def __init__(self):
         SF_dir = (
             subprocess.run(["which", "stockfish"], stdout=subprocess.PIPE)
-            .stdout.decode("utf-8").strip("\n")
-            )
-        # SF_dir = os.path.join(os.path.dirname(__file__), '../.direnv/stockfish')
+            .stdout.decode("utf-8")
+            .strip("\n")
+        )
+        # SF_dir = os.path.join(os.path.dirname(__file__), '../.direnv/stockfish')  # 2nd Method
+
         self.engine = chess.engine.SimpleEngine.popen_uci(SF_dir)
 
-        # print(self.engine.options)
-        # print()
-        # print(self.engine.options["Hash"])
-        # print(self.engine.options["Threads"])
-
-        # self.engine.configure({"Hash": 1024, "Threads": 8})
         self.limit = chess.engine.Limit(time=0.1)
-        # self.engine.configure({"Skill Level": 1})
-        # TODO Test 0.02 and others
+
+        # print(self.engine.options["Hash"], self.engine.options["Threads"])
+        # self.engine.configure({"Skill Level": 1,
+        #    "Threads": 8,
+        #    "Hash": 1024
+        #    })
 
     def rating(self, board, idx):
         """
@@ -40,5 +41,5 @@ class Engine:
         self.engine.quit()
         print("Stockfish stop \n")
 
-    def calculate_model_elo(self):  # TODO if possible
+    def calculate_model_elo(self):  # TODO
         pass
