@@ -1,5 +1,4 @@
 chess
-ipdb
 matplotlib
 numpy
 pandas

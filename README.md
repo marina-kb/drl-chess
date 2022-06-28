@@ -11,7 +11,7 @@ We also introduce the possibility to calculate move-by-move rewards using the St
 https://github.com/official-stockfish/Stockfish
 
 
-How to use
+Settup
 -------
 ### Clone the repo and install libraries
 ```bash
@@ -30,4 +30,6 @@ sudo apt-get -y install stockfish
 ```
 
 ### Basic Usage
-Run `python main.py`, you can modify various game parameters inside `CFG.init()` and choose the two agents using the `agt` key.
+Run `main.py`. With the `main()` function, you can choose two agents in the `agt` key and modify various game parameters inside `CFG.init()`.
+
+You can also generate multiple batches of games to be saved as .pkl with the `gen_data()` function. Then, train and evaluate your model with this pre-generated data using the `load_agent()` function.
