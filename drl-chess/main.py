@@ -22,7 +22,7 @@ def main(agt=None):
         debug=False,
         reward_SF=False,
         small_obs=True,
-        learning_rate=0.1,
+        learning_rate=0.01,
         depth=1,
         time_to_play=0.1,
     )
@@ -33,7 +33,7 @@ def main(agt=None):
 
     env = game.Game(agt)
 
-    for n in range(300):
+    for n in range(1000):
         CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         env.play()
 
@@ -81,14 +81,18 @@ def load_agent():
 
     for l in range(100):
         print(f"loop #{l}")
+
         for idx, dir in enumerate(utils.get_files(dir)):
             print(dir)
+
             for obs in utils.from_disk(dir):
                 agt.obs.append(obs)
+
                 if len(agt.obs) >= CFG.batch_size:
                     agt.learn()
                     agt.obs = []
             print(f"Training loss: {DAT.stats['loss'][-1]}")
+
             if idx % 5 == 0 and idx != 0:
                 eval(agt)
 
@@ -101,9 +105,11 @@ def load_agent():
 def eval(agt, n_eval=5):
 
     DAT.eval_idx += 1
+
     CFG.train = False
     CFG.depth = 1
     agt.net.eval()
+
     env = game.Game((agt, agent.StockFish()))
 
     for _ in range(n_eval):
@@ -124,7 +130,6 @@ def eval(agt, n_eval=5):
     agt.net.train()
     CFG.train = True
     CFG.depth = 5
-    # agt.obs = []
 
 
 ## SWITCH DEPENDING ON USE

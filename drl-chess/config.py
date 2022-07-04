@@ -19,31 +19,29 @@ class Configuration:
         """
         Declare types but do not instanciate anything
         """
-        self.alpha = 0.2
-        self.gamma = 1
-        self.epsilon = None
-        self.epsilon_decay = 0.01
+        self.net_type = None       # Network variable
 
-        self.learning_rate = 0.1
-        self.max_norm = 0.3
+        self.train = True          # Allow network training
 
-        self.rnd_seed = None
-        self.net_type = None
+        self.learning_rate = 0.1   # Network Learning Rate
+        self.gamma = 1             # Reward discount factor
+        self.epsilon = None        # Epsilon variable
+        self.epsilon_decay = 0.01  # Epsilon decay rate
+        self.weight_updt = 50      # Target network activation frequency
 
-        self.reward_SF = True
-        self.engine = None
-        self.time_to_play = 0.1
-        self.depth = 2
+        self.small_obs = False     # Use size-20 obs
+        self.buffer_size = 10000   # Obs deque size
+        self.batch_size = 1024     # Obs batch size
 
-        self.buffer_size = 10000
-        self.batch_size = 1024
-        self.weight_updt = 50
+        self.reward_SF = True      # Use move-by-move rewards
+        self.engine = None         # Stockfish variable
+        self.time_to_play = 0.1    # Stockfish config
+        self.depth = 2             # Stockfish config
 
-        self.debug = False
+        self.rnd_seed = None       # Random seed
 
-        self.small_obs = False
+        self.debug = False         # Print board and infos
 
-        self.train = True
 
     def init(self, net_type, **kwargs):
         """
@@ -57,7 +55,8 @@ class Configuration:
         self.rnd_seed = 1  # for diff use: random.randint(0, 1000)
         self.epsilon = 0.05
 
-        # However, these arguments can be overriden by passing them as keyword arguments in the init method. Hence, passing for instance epsilon=0.1 as a kwarg to the init method will override the default value we just defined.
+        # However, these arguments can be overriden by passing them as keyword arguments in the init method.
+        # Hence, passing for instance epsilon=0.1 as a kwarg to the init method will override the default value we just defined.
         self.__dict__.update(kwargs)
 
         # Once all values are properly set, use them.

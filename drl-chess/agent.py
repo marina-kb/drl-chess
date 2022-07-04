@@ -100,8 +100,7 @@ class DeepK(Agent):
         loss.sum().backward()
         ## Input Gradient Clipping.
         # torch.nn.utils.clip_grad_norm_(self.net.parameters(),
-        #                               max_norm=CFG.max_norm, )
-        #                               #norm_type=2)
+        #                               max_norm=0.3)
         self.opt.step()
 
         # Target Network
