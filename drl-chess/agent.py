@@ -44,9 +44,9 @@ class DeepK(Agent):
 
     def feed(self, obs_old, act, rwd, obs_new):
         """
-        Learn from a single observation sample.
+        Collect <S A R S'> observations from game and add them to the deque,
+        trigger a training every once batch large enough.
         """
-
         DAT.feed_idx += 1
 
         old = torch.tensor(obs_old["observation"]).T
@@ -55,6 +55,7 @@ class DeepK(Agent):
         new = torch.tensor(obs_new["observation"]).T
 
         self.obs.append((old, act, rwd, new))
+
         if (
             len(self.obs) >= CFG.batch_size
             and (DAT.feed_idx % (CFG.batch_size / 4) == 0)
@@ -63,7 +64,9 @@ class DeepK(Agent):
             self.learn()
 
     def learn(self):
-
+        """
+        Train the model
+        """
         DAT.learn_idx += 1
 
         batch = random.sample(self.obs, CFG.batch_size)
@@ -171,8 +174,7 @@ class StockFish(Agent):
         return self.move_to_act(move.move)
 
     def move(self, _, board):
-        move = self._move(board)
-        return move
+        return self._move(board)
 
 
 class ObservationGenerator(StockFish, DeepK):
@@ -183,4 +185,4 @@ class ObservationGenerator(StockFish, DeepK):
         return super()._move(board)
 
     def learn(self):
-        return
+        pass

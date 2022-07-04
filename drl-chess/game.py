@@ -45,8 +45,7 @@ class Game:
             DAT.set_data((new, act), idx)
 
             if CFG.debug:
-                print(self.board())
-                print()
+                print(self.board(), "\n")
 
             idx = 1 - idx
 

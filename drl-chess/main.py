@@ -19,7 +19,7 @@ def main(agt=None):
 
     CFG.init(
         net_type="conv",
-        debug=True,
+        debug=False,
         reward_SF=False,
         small_obs=True,
         learning_rate=0.1,
@@ -41,6 +41,8 @@ def main(agt=None):
             print(f"loss : {DAT.stats['loss'][-1]}")
             eval(agt[0])
 
+    stop_eng()
+
 
 def gen_data():
 
@@ -61,6 +63,7 @@ def gen_data():
         agt[1].obs.clear()
 
     utils.to_disk(obs)  # Push obs batch to ../data/
+    stop_eng()
 
 
 def load_agent():
@@ -74,7 +77,7 @@ def load_agent():
     )
 
     agt = agent.DeepK()
-    dir = os.path.join(os.path.dirname(__file__), f"../data")
+    dir = os.path.join(os.path.dirname(__file__), "../data")
 
     for l in range(100):
         print(f"loop #{l}")
@@ -92,6 +95,7 @@ def load_agent():
         utils.w8_saver(agt, f"pickledmodel-{l}")
 
     # main(agt = (agt, agent.StockFish()))
+    stop_eng()
 
 
 def eval(agt, n_eval=5):
@@ -120,14 +124,14 @@ def eval(agt, n_eval=5):
     agt.net.train()
     CFG.train = True
     CFG.depth = 5
-    agt.obs = []
+    # agt.obs = []
 
 
 ## SWITCH DEPENDING ON USE
 
 main()
 
-utils.plot_hist()
+# utils.plot_hist()
 
 # while True:
 #     gen_data()

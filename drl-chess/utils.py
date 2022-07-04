@@ -37,13 +37,13 @@ def get_files(dir):
 # Saving and loading model
 def w8_loader(model, file_name):
     device = torch.device("cpu")
-    dir = os.path.join(os.path.dirname(__file__), f"../weights/{file_name}.pkl")
+    dir = os.path.join(os.path.dirname(__file__), f"../weights/{file_name}.pt")
     model.load_state_dict(torch.load(dir, map_location=device))
     return model
 
 
 def w8_saver(model, file_name):
-    dir = os.path.join(os.path.dirname(__file__), f"../weights/{file_name}.pkl")
+    dir = os.path.join(os.path.dirname(__file__), f"../weights/{file_name}.pt")
     torch.save(model.net.state_dict(), dir)
     return
 
