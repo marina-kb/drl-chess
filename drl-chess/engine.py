@@ -22,9 +22,8 @@ class Engine:
 
         # print(self.engine.options["Hash"], self.engine.options["Threads"])
         # self.engine.configure({"Skill Level": 1,
-        #    "Threads": 8,
-        #    "Hash": 1024
-        #    })
+        #                        "Threads": 8,
+        #                        "Hash": 1024})
 
     def rating(self, board, idx):
         """

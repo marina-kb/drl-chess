@@ -37,7 +37,7 @@ def main(agt=None):
         CFG.epsilon = math.exp(-CFG.epsilon_decay * n)
         env.play()
 
-        if n % 10 == 0 and n != 0:
+        if n % 50 == 0 and n != 0:
             print(f"loss : {DAT.stats['loss'][-1]}")
             eval(agt[0])
 

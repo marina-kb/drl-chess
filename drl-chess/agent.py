@@ -61,6 +61,7 @@ class DeepK(Agent):
             and (DAT.feed_idx % (CFG.batch_size / 4) == 0)
             and CFG.train
         ):
+            print(f"obs size: {len(self.obs)}")
             self.learn()
 
     def learn(self):
@@ -68,6 +69,9 @@ class DeepK(Agent):
         Train the model
         """
         DAT.learn_idx += 1
+
+        if CFG.debug:
+            print(f"Start learn #{DAT.learn_idx}")
 
         batch = random.sample(self.obs, CFG.batch_size)
         old, act, rwd, new = zip(*batch)
@@ -92,7 +96,7 @@ class DeepK(Agent):
         # Compute the loss
         loss = torch.square(exp - out)
         if CFG.debug:
-            print("loss", loss, "\n")
+            print("loss =", loss, "\n")
         DAT.set_loss(np.mean(loss.tolist()))  # Adds mean loss of batch.
 
         # Perform a backward propagation.
@@ -106,6 +110,8 @@ class DeepK(Agent):
         # Target Network
         if DAT.learn_idx % CFG.weight_updt == 0:
             self.tgt.load_state_dict(self.net.state_dict())
+            if CFG.debug:
+                print("Target network weight update")
 
     def move(self, new_obs, board):
         """

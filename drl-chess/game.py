@@ -31,6 +31,8 @@ class Game:
                 old, act = dat
                 rwd = DAT.get_reward(self.board(), idx) if CFG.reward_SF else rwd
                 agt.feed(old, act, rwd, new)
+                if CFG.debug:
+                    print(f"Reward : {rwd}")
 
             if done:
                 DAT.set_game(self.board())
