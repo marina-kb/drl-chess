@@ -62,7 +62,7 @@ class Data:
     def set_game(self, board):
         rwd_1 = np.diff(list(map(self.linearize_reward, self.score[0])))
         self.stats["reward_1"].append(sum(rwd_1) / len(self.score[0]))
-        # print(type(self.stats['reward_1']), self.stats['reward_1'])
+        print(type(self.stats['reward_1']), self.stats['reward_1'])
         rwd_2 = np.diff(list(map(self.linearize_reward, self.score[1])))
         self.stats["reward_2"].append(sum(rwd_2) / len(self.score[1]))
 
