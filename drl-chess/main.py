@@ -132,13 +132,16 @@ def eval(agt, n_eval=5):
     CFG.depth = 5
 
 
-## SWITCH DEPENDING ON USE
+if __name__ == '__main__':
+    """
+    SWITCH DEPENDING ON USE
+    """
 
-main()
+    main()
 
-# utils.plot_hist()
+    # utils.plot_hist()
 
-# while True:
-#     gen_data()
+    # while True:
+    #     gen_data()
 
-# load_agent()
+    # load_agent()
