@@ -1,5 +1,7 @@
+from json import load
 import math
 import os
+import sys
 
 from pettingzoo.classic.chess import chess_utils
 
@@ -136,8 +138,16 @@ if __name__ == '__main__':
     """
     SWITCH DEPENDING ON USE
     """
-
-    main()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'main':
+            main()
+        if sys.argv[1] == 'gen':
+            while True:
+                gen_data()
+        if sys.argv[1] == 'load':
+            load_agent()
+    else:
+        main()
 
     # utils.plot_hist()
 
