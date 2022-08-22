@@ -1,5 +1,6 @@
 import math
 import os
+import sys
 
 from pettingzoo.classic.chess import chess_utils
 
@@ -132,13 +133,24 @@ def eval(agt, n_eval=5):
     CFG.depth = 5
 
 
-## SWITCH DEPENDING ON USE
+if __name__ == '__main__':
+    """
+    SWITCH DEPENDING ON USE
+    """
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'main':
+            main()
+        if sys.argv[1] == 'gen':
+            while True:
+                gen_data()
+        if sys.argv[1] == 'load':
+            load_agent()
+    else:
+        main()
 
-main()
+    # utils.plot_hist()
 
-# utils.plot_hist()
+    # while True:
+    #     gen_data()
 
-# while True:
-#     gen_data()
-
-# load_agent()
+    # load_agent()
