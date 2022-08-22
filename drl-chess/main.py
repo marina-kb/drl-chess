@@ -4,11 +4,11 @@ import sys
 
 from pettingzoo.classic.chess import chess_utils
 
-import game
 import agent
+import game
+import utils
 from config import CFG
 from data import DAT
-import utils
 
 
 def stop_eng():
@@ -30,7 +30,8 @@ def main(agt=None):
 
     if agt is None:
         agt = (agent.DeepK(), agent.StockFish())  # original agt
-        # agt = (utils.w8_loader(agent.DeepK.net,'pickled_model'), agent.StockFish()) # weight loader
+        ## To load an agent with saved state from disk, use below instead:
+        # agt = (utils.w8_loader(agent.DeepK.net,'pickled_model'), agent.StockFish())
 
     env = game.Game(agt)
 
@@ -73,7 +74,7 @@ def load_agent():
         net_type="conv",
         debug=False,
         reward_SF=False,
-        small_obs=False,  # Check reward SF dependencies
+        small_obs=False,  # TODO Check reward SF dependencies
         learning_rate=0.01,
     )
 
@@ -97,9 +98,12 @@ def load_agent():
             if idx % 5 == 0 and idx != 0:
                 eval(agt)
 
+        ## Unindent below by 1 to only save once looped through all files
         utils.w8_saver(agt, f"pickledmodel-{l}")
 
+    ## Uncomment below to keep training with main once looped through all files:
     # main(agt = (agt, agent.StockFish()))
+
     stop_eng()
 
 
@@ -109,7 +113,7 @@ def eval(agt, n_eval=5):
 
     CFG.train = False
     CFG.depth = 1
-    agt.net.eval()
+    agt.net.eval()  # Set NN model to evaluation mode.
 
     env = game.Game((agt, agent.StockFish()))
 
@@ -128,29 +132,24 @@ def eval(agt, n_eval=5):
     DAT.tot_draw += win.count(0)
     print(f"Since init: total wins {DAT.tot_win} & total draws {DAT.tot_draw}")
 
-    agt.net.train()
+    agt.net.train()  # Set NN model back to training mode
     CFG.train = True
     CFG.depth = 5
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """
     SWITCH DEPENDING ON USE
     """
     if len(sys.argv) > 1:
-        if sys.argv[1] == 'main':
+        if sys.argv[1] == "main":
             main()
-        if sys.argv[1] == 'gen':
+        if sys.argv[1] == "gen":
             while True:
                 gen_data()
-        if sys.argv[1] == 'load':
+        if sys.argv[1] == "load":
             load_agent()
     else:
         main()
 
     # utils.plot_hist()
-
-    # while True:
-    #     gen_data()
-
-    # load_agent()

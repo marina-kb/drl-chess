@@ -4,7 +4,6 @@ Engine class to use Stockfish
 
 import subprocess
 import chess.engine
-import os
 
 
 class Engine:
@@ -14,12 +13,15 @@ class Engine:
             .stdout.decode("utf-8")
             .strip("\n")
         )
-        # SF_dir = os.path.join(os.path.dirname(__file__), '../.direnv/stockfish')  # 2nd Method
+        ## If subprocess cannot find stockfish, move it to .direnv and switch to method :
+        # import os
+        # SF_dir = os.path.join(os.path.dirname(__file__), '../.direnv/stockfish')
 
         self.engine = chess.engine.SimpleEngine.popen_uci(SF_dir)
 
         self.limit = chess.engine.Limit(time=0.1)
 
+        ## TODO config stockfish options to optimize performance:
         # print(self.engine.options["Hash"], self.engine.options["Threads"])
         # self.engine.configure({"Skill Level": 1,
         #                        "Threads": 8,

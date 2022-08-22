@@ -2,16 +2,15 @@
 Agent module.
 """
 
+import collections
 import random
+import chess.engine
 import numpy as np
 import torch
-import collections
-
-import chess.engine
 from pettingzoo.classic.chess import chess_utils
 
-from data import DAT
 from config import CFG
+from data import DAT
 from engine import Engine
 from network import Conv, DistinctLayer
 
@@ -28,6 +27,10 @@ class Agent:
 
 
 class DeepK(Agent):
+    """
+    Main agent based on a Markov Decision Process.
+    Follows Deep Q-learning mechanism: Collects observation tuples from game.py and feeds samples to a NN model.
+    """
     def __init__(self):
         super().__init__()
 
@@ -45,7 +48,7 @@ class DeepK(Agent):
     def feed(self, obs_old, act, rwd, obs_new):
         """
         Collect <S A R S'> observations from game and add them to the deque,
-        trigger a training every once batch large enough.
+        Trigger a training each time batch is large enough.
         """
         DAT.feed_idx += 1
 
@@ -61,12 +64,13 @@ class DeepK(Agent):
             and (DAT.feed_idx % (CFG.batch_size / 4) == 0)
             and CFG.train
         ):
-            print(f"obs size: {len(self.obs)}")
+            if CFG.debug:
+                print(f"obs size: {len(self.obs)}")
             self.learn()
 
     def learn(self):
         """
-        Train the model
+        Train the model.
         """
         DAT.learn_idx += 1
 
@@ -117,7 +121,6 @@ class DeepK(Agent):
         """
         Run an epsilon-greedy policy for next action selection.
         """
-
         # Return random action with probability epsilon
         if random.uniform(0, 1) < CFG.epsilon and CFG.train:
             if CFG.debug:
@@ -144,6 +147,9 @@ class DeepK(Agent):
 
 
 class Random(Agent):
+    """
+    Basic Agent. Always returns a random move.
+    """
     def __init__(self):
         super().__init__()
 
@@ -152,6 +158,10 @@ class Random(Agent):
 
 
 class StockFish(Agent):
+    """
+    Agent that uses the Stockfish chess engine.
+    Its difficulty parameters can be set in config.py
+    """
     def __init__(self):
         super().__init__()
         if CFG.engine == None:

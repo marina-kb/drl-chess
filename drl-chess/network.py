@@ -10,7 +10,7 @@ from config import CFG
 
 class Conv(nn.Module):
     """
-    CNN DQN
+    Basic CNN.
     """
 
     def __init__(self):
@@ -39,7 +39,10 @@ class Conv(nn.Module):
         )
 
         self.linear = nn.Sequential(
-            nn.Linear(512, 2048), nn.LeakyReLU(), nn.Linear(2048, 4672), nn.Tanh()
+            nn.Linear(512, 2048),
+            nn.LeakyReLU(),
+            nn.Linear(2048, 4672),
+            nn.Tanh()
         )
 
     def forward(self, x):
@@ -52,8 +55,8 @@ class Conv(nn.Module):
 
 class DistinctLayer(nn.Module):
     """
-    A multi layer network that distinguishes 'global' and 'piece-centric' layers.
-    Use only with old version layering (CFG.twnty_obs = True).
+    A multi layer CNN that distinguishes 'global' (0-6) and 'piece-centric' (7-20) layers.
+    Use only with pettingzoo v3 layering (change to CFG.small_obs = True).
     """
 
     def __init__(self):
@@ -99,7 +102,10 @@ class DistinctLayer(nn.Module):
         )
 
         self.linear = nn.Sequential(
-            nn.Linear(2048, 2048), nn.LeakyReLU(), nn.Linear(2048, 4672), nn.Tanh()
+            nn.Linear(2048, 2048),
+            nn.LeakyReLU(),
+            nn.Linear(2048, 4672),
+            nn.Tanh()
         )
 
     def forward(self, x):

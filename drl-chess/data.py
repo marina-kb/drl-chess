@@ -1,6 +1,7 @@
 """
 Data generator module.
 """
+
 import numpy as np
 import math
 
@@ -66,7 +67,6 @@ class Data:
         self.stats["reward_2"].append(sum(rwd_2) / len(self.score[1]))
 
         self.stats["outcome"].append(board.result(claim_draw=True))
-
         self.reset()
 
 
